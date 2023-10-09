@@ -112,6 +112,7 @@ class GhConversations extends GhHtmlElement {
             body: JSON.stringify({
                 type: messenger,
                 messenger_user_id: this.messengers[messenger].messenger_user_id,
+                token: this.messengers[messenger].token,
                 app_id: this.app_id,
                 field_id: this.field_id,
                 user_id: this.activeUserId,
@@ -148,7 +149,8 @@ class GhConversations extends GhHtmlElement {
                             field_id: this.field_id,
                             messenger: messenger,
                             user_id: this.messengers[messenger].messenger_user_id,
-                            photo_field_id: this.messengers[messenger].photo_field_id
+                            photo_field_id: this.messengers[messenger].photo_field_id,
+                            token: this.messengers[messenger].token
                         })
                     });
 
