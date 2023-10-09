@@ -67,7 +67,7 @@ class GhConversations extends GhHtmlElement {
         for(const index of Object.keys(model.data_model.messengers)) {
             const messenger = model.data_model.messengers[index];
             if(messenger.enabled && messenger.bot_token) {
-                await fetch('https://development.gudhub.com/api/services/conversation/set-webhook', {
+                await fetch('https://development.gudhub.com/api/services/dev/conversation/set-webhook', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -104,7 +104,7 @@ class GhConversations extends GhHtmlElement {
         const messengerSelect = this.querySelector('.messenger-select');
         const messenger = messengerSelect.options[messengerSelect.selectedIndex].value;
         
-        const response = await fetch('https://development.gudhub.com/api/services/conversation/send-message', {
+        const response = await fetch('https://development.gudhub.com/api/services/dev/conversation/send-message', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -130,14 +130,14 @@ class GhConversations extends GhHtmlElement {
         }
 
         for(const messenger of Object.keys(this.messengers)) {
-            const response = await fetch(`https://development.gudhub.com/api/services/conversation/get-conversation?app_id=${this.app_id}&field_id=${this.field_id}&user_id=${encodeURIComponent(this.messengers[messenger].messenger_user_id)}&messenger=${messenger}`);
+            const response = await fetch(`https://development.gudhub.com/api/services/dev/conversation/get-conversation?app_id=${this.app_id}&field_id=${this.field_id}&user_id=${encodeURIComponent(this.messengers[messenger].messenger_user_id)}&messenger=${messenger}`);
             try {
                 const json = await response.json();
                 if(!json) {
                     continue;
                 }
                 if(!json.user) {
-                    const userResponse = await fetch(`https://development.gudhub.com/api/services/conversation/update-messenger-user`, {
+                    const userResponse = await fetch(`https://development.gudhub.com/api/services/dev/conversation/update-messenger-user`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
