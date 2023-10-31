@@ -1,4 +1,12 @@
 import './conversations.webcomponent.js';
+import FacebookLogin from './facebookLogin.js';
+if(!customElements.get('facebook-login')){
+    customElements.define('facebook-login', FacebookLogin);
+}
+import GhInput from './input.webcomponent.js';
+if(!customElements.get('gh-input-web-component')){
+    customElements.define('gh-input-web-component', GhInput);
+}
 
 export default class GhConversationsData {
 
@@ -66,6 +74,15 @@ export default class GhConversationsData {
                         title: "Messengers settings",
                         type: "header"
                     },
+                    // {
+                    //     type: 'html',
+                    //     showIf: 'data_model.messengers.facebook.enabled',
+                    //     data_model: function (fieldModel) {
+                    //       return fieldModel;
+                    //     },
+                    //     control:
+                    //       `<gh-input-web-component app-id="1232" gh-model="field_model.data_model.messengers.facebook.bot_token"></gh-input-web-component>`
+                    // },
                     {
                         type: 'ghElement',
                         property: 'data_model.messengers.viber.enabled',
@@ -171,7 +188,78 @@ export default class GhConversationsData {
                                 name_space: 'telegram_bot_token'
                             }
                         }
-                    }
+                    },
+                    {
+                        type: 'ghElement',
+                        property: 'data_model.messengers.facebook.enabled',
+                        data_model: () => {
+                            return {
+                                data_type: 'boolean',
+                                field_name: 'Facebook',
+                                name_space: 'facebook_enabled'
+                            }
+                        }
+                    },
+                    {
+                        type: 'html',
+                        showIf: 'data_model.messengers.facebook.enabled',
+                        data_model: function (fieldModel) {
+                          return fieldModel;
+                        },
+                        control:
+                          `<facebook-login app-id="12323" gh-model="field_model.data_model.messengers.facebook.bot_token"></facebook-login>`
+                    },
+                    // {
+                    //     type: 'html',
+                    //     showIf: 'data_model.messengers.facebook.enabled',
+                    //     data_model: function (fieldModel) {
+                    //       return fieldModel;
+                    //     },
+                    //     control:
+                    //       `<gh-input-web-component app-id="1232" gh-model="field_model.data_model.messengers.facebook.bot_token" value="{{value}}"></gh-input-web-component>`
+                    // },
+                    {
+                        type: 'ghElement',
+                        property: 'data_model.messengers.facebook.user_id_field',
+                        showIf: 'data_model.messengers.facebook.enabled',
+                        data_model: (field) => {
+                            return {
+                                data_type: 'field',
+                                field_name: 'Facebook user id field',
+                                name_space: 'facebook_user_id_field',
+                                data_model: {
+                                    app_id: field.app_id
+                                }
+                            }
+                        }
+                    },
+                    {
+                        type: 'ghElement',
+                        property: 'data_model.messengers.facebook.photo_field',
+                        showIf: 'data_model.messengers.facebook.enabled',
+                        data_model: (field) => {
+                            return {
+                                data_type: 'field',
+                                field_name: 'Facebook photo field',
+                                name_space: 'facebook_photo_field',
+                                data_model: {
+                                    app_id: field.app_id
+                                }
+                            }
+                        }
+                    },
+                    {
+                        type: 'ghElement',
+                        property: 'data_model.messengers.facebook.bot_token',
+                        showIf: 'data_model.messengers.facebook.enabled',
+                        data_model: () => {
+                            return {
+                                data_type: 'text',
+                                field_name: 'Facebook Page token',
+                                name_space: 'facebook_page_token'
+                            }
+                        }
+                    },
                 ],
             ]
         }];

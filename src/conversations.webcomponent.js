@@ -55,8 +55,9 @@ class GhConversations extends GhHtmlElement {
         super.render(html);
 
         this.scrollChatToBottom();
+        this.modelUpdated()
 
-        gudhub.on('gh_model_update', { app_id: this.app_id, field_id: this.field_id }, this.modelUpdated.bind(this));
+        // gudhub.on('gh_model_update', { app_id: this.app_id, field_id: this.field_id }, this.modelUpdated.bind(this));
 
         gudhub.on('conversations_message_received', { app_id: this.app_id, field_id: this.field_id }, this.messageReceived.bind(this));
     }
@@ -67,17 +68,18 @@ class GhConversations extends GhHtmlElement {
         for(const index of Object.keys(model.data_model.messengers)) {
             const messenger = model.data_model.messengers[index];
             if(messenger.enabled && messenger.bot_token) {
-                await fetch('https://development.gudhub.com/api/services/dev/conversation/set-webhook', {
+                await fetch('https://gudhub-node-server.ngrok.io/conversation/set-webhook', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        token: messenger.bot_token,
+                        token: index == 'facebook' ? messenger.bot_token.split(',')[0] : messenger.bot_token,
                         app_id: model.app_id,
                         field_id: model.field_id,
                         messenger: index,
-                        gudhub_user_id: gudhub.storage.getUser().user_id
+                        gudhub_user_id: gudhub.storage.getUser().user_id,
+                        page_id: index == 'facebook' ? messenger.bot_token.split(',')[1] : ''
                     })
                 })
             }
@@ -103,8 +105,9 @@ class GhConversations extends GhHtmlElement {
         const text = element.querySelector('textarea').value;
         const messengerSelect = this.querySelector('.messenger-select');
         const messenger = messengerSelect.options[messengerSelect.selectedIndex].value;
+        console.log(this.messengers[messenger])
         
-        const response = await fetch('https://development.gudhub.com/api/services/dev/conversation/send-message', {
+        const response = await fetch('https://gudhub-node-server.ngrok.io/conversation/send-message', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -112,7 +115,7 @@ class GhConversations extends GhHtmlElement {
             body: JSON.stringify({
                 type: messenger,
                 messenger_user_id: this.messengers[messenger].messenger_user_id,
-                token: this.messengers[messenger].token,
+                token: messenger == 'facebook' ? this.messengers[messenger].token.split(',')[0] : this.messengers[messenger].token,
                 app_id: this.app_id,
                 field_id: this.field_id,
                 user_id: this.activeUserId,
@@ -131,14 +134,14 @@ class GhConversations extends GhHtmlElement {
         }
 
         for(const messenger of Object.keys(this.messengers)) {
-            const response = await fetch(`https://development.gudhub.com/api/services/dev/conversation/get-conversation?app_id=${this.app_id}&field_id=${this.field_id}&user_id=${encodeURIComponent(this.messengers[messenger].messenger_user_id)}&messenger=${messenger}`);
+            const response = await fetch(`https://gudhub-node-server.ngrok.io/conversation/get-conversation?app_id=${this.app_id}&field_id=${this.field_id}&user_id=${encodeURIComponent(this.messengers[messenger].messenger_user_id)}&messenger=${messenger}`);
             try {
                 const json = await response.json();
                 if(!json) {
                     continue;
                 }
                 if(!json.user) {
-                    const userResponse = await fetch(`https://development.gudhub.com/api/services/dev/conversation/update-messenger-user`, {
+                    const userResponse = await fetch(`https://gudhub-node-server.ngrok.io/conversation/update-messenger-user`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -150,7 +153,7 @@ class GhConversations extends GhHtmlElement {
                             messenger: messenger,
                             user_id: this.messengers[messenger].messenger_user_id,
                             photo_field_id: this.messengers[messenger].photo_field_id,
-                            token: this.messengers[messenger].token
+                            token: messenger == 'facebook' ? this.messengers[messenger].token.split(',')[0] : this.messengers[messenger].token,
                         })
                     });
 
