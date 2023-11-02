@@ -68,7 +68,7 @@ class GhConversations extends GhHtmlElement {
         for(const index of Object.keys(model.data_model.messengers)) {
             const messenger = model.data_model.messengers[index];
             if(messenger.enabled && messenger.bot_token) {
-                await fetch('https://gudhub-node-server.ngrok.io/conversation/set-webhook', {
+                await fetch('https://development.gudhub.com/api/services/dev/set-webhook', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -90,6 +90,9 @@ class GhConversations extends GhHtmlElement {
         if(this.app_id == response.data.app_id && this.field_id == response.data.field_id && this.conversation.users.find((user) => user.user_id == response.data.messenger_user_id)) {
             const message = response.data.message;
             message.messenger = response.data.messenger;
+            if(message.type === 'attachment') {
+                message.type = this.getFileType({ name: message.content });
+            }
             this.conversation.messages.push(message);
             super.render(html);
             this.scrollChatToBottom();
@@ -105,22 +108,103 @@ class GhConversations extends GhHtmlElement {
         const text = element.querySelector('textarea').value;
         const messengerSelect = this.querySelector('.messenger-select');
         const messenger = messengerSelect.options[messengerSelect.selectedIndex].value;
-        console.log(this.messengers[messenger])
-        
-        const response = await fetch('https://gudhub-node-server.ngrok.io/conversation/send-message', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                type: messenger,
-                messenger_user_id: this.messengers[messenger].messenger_user_id,
-                token: messenger == 'facebook' ? this.messengers[messenger].token.split(',')[0] : this.messengers[messenger].token,
-                app_id: this.app_id,
-                field_id: this.field_id,
-                user_id: this.activeUserId,
-                text
-            })
+
+        const uploadInput = this.querySelector('.upload input');
+
+        if(uploadInput.files.length > 0) {
+
+            const file = uploadInput.files[0];
+            const fileType = this.getFileType(file);
+
+            const gudhubFile = await this.uploadFileToGudHub(file);
+
+            const response = await fetch('https://development.gudhub.com/api/services/dev/send-attachment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    messenger,
+                    messenger_user_id: this.messengers[messenger].messenger_user_id,
+                    token: messenger == 'facebook' ? this.messengers[messenger].token.split(',')[0] : this.messengers[messenger].token,
+                    app_id: this.app_id,
+                    field_id: this.field_id,
+                    user_id: this.activeUserId,
+                    attachment: {
+                        url: gudhubFile.url,
+                        type: fileType
+                    }
+                })
+            });
+
+            uploadInput.value = '';
+
+        } else {
+            const response = await fetch('https://development.gudhub.com/api/services/dev/send-message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    messenger,
+                    messenger_user_id: this.messengers[messenger].messenger_user_id,
+                    token: messenger == 'facebook' ? this.messengers[messenger].token.split(',')[0] : this.messengers[messenger].token,
+                    app_id: this.app_id,
+                    field_id: this.field_id,
+                    user_id: this.activeUserId,
+                    text
+                })
+            });
+        }
+
+    }
+
+    async uploadFileToGudHub(file) {
+
+        const base64 = await this.toBase64(file);
+
+        const response = await gudhub.uploadFileFromString({
+            format: 'base64',
+            source: base64.substring(base64.indexOf(',') + 1),
+            file_name: file.name,
+            extension: file.name.split('.').pop(),
+            app_id: this.app_id,
+            item_id: this.item_id,
+            element_id: this.field_id
+        });
+
+        return response;
+
+    }
+
+    getFileType(file) {
+        const fileExtension = file.name.split('.').pop();
+
+        if(['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
+            return 'image';
+        }
+
+        if(['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv'].includes(fileExtension)) {
+            return 'video';
+        }
+
+        if(['mp3', 'wav', 'ogg', 'flac', 'aac'].includes(fileExtension)) {
+            return 'audio';
+        }
+
+        return 'file';
+    }
+
+    toBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+                resolve(reader.result);
+            };
+            reader.onerror = function (error) {
+                reject(error);
+            };
         });
     }
 
@@ -134,14 +218,14 @@ class GhConversations extends GhHtmlElement {
         }
 
         for(const messenger of Object.keys(this.messengers)) {
-            const response = await fetch(`https://gudhub-node-server.ngrok.io/conversation/get-conversation?app_id=${this.app_id}&field_id=${this.field_id}&user_id=${encodeURIComponent(this.messengers[messenger].messenger_user_id)}&messenger=${messenger}`);
+            const response = await fetch(`https://development.gudhub.com/api/services/dev/get-conversation?app_id=${this.app_id}&field_id=${this.field_id}&user_id=${encodeURIComponent(this.messengers[messenger].messenger_user_id)}&messenger=${messenger}`);
             try {
                 const json = await response.json();
                 if(!json) {
                     continue;
                 }
                 if(!json.user) {
-                    const userResponse = await fetch(`https://gudhub-node-server.ngrok.io/conversation/update-messenger-user`, {
+                    const userResponse = await fetch(`https://development.gudhub.com/api/services/dev/update-messenger-user`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -176,6 +260,9 @@ class GhConversations extends GhHtmlElement {
                 }
                 const messages = json.messages.map((message) => {
                     message.messenger = messenger;
+                    if(message.type === 'attachment') {
+                        message.type = this.getFileType({ name: message.content });
+                    }
                     return message;
                 });
                 conversation.messages.push(...messages);
