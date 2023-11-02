@@ -15,12 +15,42 @@ gh-conversations {
             overflow-y: auto;
             overflow-x: hidden;
             padding-top: 12px; // for messenger icon
+            
+            .date {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                position: relative;
+
+                span {
+                    padding: 5px 10px;
+                    font-size: 14px;
+                    font-weight: 400;
+                    box-shadow: 0 0 0 1px #ccc,0 1px 3px 0 #ccc;
+                    background: #fff;
+                    border-radius: 20px;
+                }
+
+                &::after {
+                    content: '';
+                    display: block;
+                    clear: both;
+                    width: 100%;
+                    height: 1px;
+                    background-color: #ccc;
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    z-index: -1;
+                    top: 50%;
+                }
+            }
 
             .message {
                 display: flex;
                 align-items: flex-start;
                 justify-content: flex-start;
-                margin-bottom: 10px;
+                margin-bottom: 15px;
 
                 &:nth-last-child(1) {
                     margin-bottom: 0;
@@ -41,8 +71,8 @@ gh-conversations {
                         align-items: center;
                         justify-content: center;
                         position: absolute;
-                        top: -12px;
-                        right: -12px;
+                        bottom: -8px;
+                        right: -6px;
 
                         svg {
                             width: 100%;
@@ -64,7 +94,6 @@ gh-conversations {
                     }
 
                     .name {
-                        font-size: 400px;
                         font-size: 12px;
                         display: inline-block;
                         margin-top: 5px;
@@ -74,28 +103,41 @@ gh-conversations {
                 }
 
                 .content {
-                    border: 1px solid #e4e4e4;
                     padding: 6px;
-                    border-radius: 5px;
+
+                    img, video {
+                        width: 50%;
+                    }
 
                     .header {
-                        border-bottom: 1px solid #e4e4e4;
                         padding-bottom: 5px;
-                        margin-bottom: 10px;
+                        .name {
+                            font-size: 14px;
+                            font-weight: bold;
+                        }
+                        .time {
+                            color: #616061;
+                            font-size: 14px;
+                            margin-left: 5px;
+                        }
+                    }
+                    
+                    .message {
+                        font-size: 15px;
                     }
                 }
 
-                &.me {
-                    justify-content: flex-end;
-                    margin-right: 10px;
-                    margin-left: auto;
-                    flex-direction: row-reverse;
+                // &.me {
+                //     justify-content: flex-end;
+                //     margin-right: 10px;
+                //     margin-left: auto;
+                //     flex-direction: row-reverse;
 
-                    .user {
-                        margin-left: 10px;
-                        margin-right: 0;
-                    }
-                }
+                //     .user {
+                //         margin-left: 10px;
+                //         margin-right: 0;
+                //     }
+                // }
             }
         }
         
