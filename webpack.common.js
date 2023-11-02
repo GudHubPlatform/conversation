@@ -24,7 +24,8 @@ export default {
                 test: /\.html$/i,
                 loader: "html-loader",
                 options: {
-                    minimize: false
+                    minimize: false,
+                    sources: false
                 }
             },
             {
