@@ -3,10 +3,6 @@ import FacebookLogin from './facebookLogin.js';
 if(!customElements.get('facebook-login')){
     customElements.define('facebook-login', FacebookLogin);
 }
-import GhInput from './input.webcomponent.js';
-if(!customElements.get('gh-input-web-component')){
-    customElements.define('gh-input-web-component', GhInput);
-}
 
 export default class GhConversationsData {
 
@@ -19,7 +15,7 @@ export default class GhConversationsData {
     getTemplate() {
         return {
             constructor: 'field',
-            name: 'Convesations',
+            name: 'Conversations',
             icon: 'timeline',
             model: {
                 field_id: 0,
@@ -209,15 +205,6 @@ export default class GhConversationsData {
                         control:
                           `<facebook-login app-id="12323" gh-model="field_model.data_model.messengers.facebook.bot_token"></facebook-login>`
                     },
-                    // {
-                    //     type: 'html',
-                    //     showIf: 'data_model.messengers.facebook.enabled',
-                    //     data_model: function (fieldModel) {
-                    //       return fieldModel;
-                    //     },
-                    //     control:
-                    //       `<gh-input-web-component app-id="1232" gh-model="field_model.data_model.messengers.facebook.bot_token" value="{{value}}"></gh-input-web-component>`
-                    // },
                     {
                         type: 'ghElement',
                         property: 'data_model.messengers.facebook.user_id_field',
@@ -260,6 +247,30 @@ export default class GhConversationsData {
                             }
                         }
                     },
+                    {
+                        type: 'ghElement',
+                        property: 'data_model.messengers.facebook.page_name',
+                        showIf: 'data_model.messengers.facebook.enabled',
+                        data_model: () => {
+                            return {
+                                data_type: 'text',
+                                field_name: 'Facebook Page Name',
+                                name_space: 'facebook_page_name'
+                            }
+                        }
+                    },
+                    {
+                        type: 'ghElement',
+                        property: 'data_model.messengers.facebook.page_id',
+                        showIf: 'data_model.messengers.facebook.enabled',
+                        data_model: () => {
+                            return {
+                                data_type: 'text',
+                                field_name: 'Facebook Page Id',
+                                name_space: 'facebook_page_id'
+                            }
+                        }
+                    }
                 ],
             ]
         }];

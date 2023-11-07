@@ -74,12 +74,12 @@ class GhConversations extends GhHtmlElement {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        token: index == 'facebook' ? messenger.bot_token.split(',')[0] : messenger.bot_token,
+                        token: messenger.bot_token,
                         app_id: model.app_id,
                         field_id: model.field_id,
                         messenger: index,
                         gudhub_user_id: gudhub.storage.getUser().user_id,
-                        page_id: index == 'facebook' ? messenger.bot_token.split(',')[1] : ''
+                        page_id: index == 'facebook' ? messenger.page_id : ''
                     })
                 })
             }
@@ -126,7 +126,7 @@ class GhConversations extends GhHtmlElement {
                 body: JSON.stringify({
                     messenger,
                     messenger_user_id: this.messengers[messenger].messenger_user_id,
-                    token: messenger == 'facebook' ? this.messengers[messenger].token.split(',')[0] : this.messengers[messenger].token,
+                    token: this.messengers[messenger].token,
                     app_id: this.app_id,
                     field_id: this.field_id,
                     user_id: this.activeUserId,
@@ -148,7 +148,7 @@ class GhConversations extends GhHtmlElement {
                 body: JSON.stringify({
                     messenger,
                     messenger_user_id: this.messengers[messenger].messenger_user_id,
-                    token: messenger == 'facebook' ? this.messengers[messenger].token.split(',')[0] : this.messengers[messenger].token,
+                    token: this.messengers[messenger].token,
                     app_id: this.app_id,
                     field_id: this.field_id,
                     user_id: this.activeUserId,
@@ -237,7 +237,7 @@ class GhConversations extends GhHtmlElement {
                             messenger: messenger,
                             user_id: this.messengers[messenger].messenger_user_id,
                             photo_field_id: this.messengers[messenger].photo_field_id,
-                            token: messenger == 'facebook' ? this.messengers[messenger].token.split(',')[0] : this.messengers[messenger].token,
+                            token: this.messengers[messenger].token
                         })
                     });
 
