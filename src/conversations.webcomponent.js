@@ -109,7 +109,6 @@ class GhConversations extends GhHtmlElement {
     }
 
     async messageReceived(_event, response) {
-        console.log("messageReceive")
         const model = await gudhub.getField(this.app_id, this.field_id);
         if(this.app_id == response.data.app_id && this.field_id == response.data.field_id && this.conversation.users.find((user) => user.user_id == response.data.messenger_user_id)) {
             const message = response.data.message;
@@ -354,7 +353,7 @@ class GhConversations extends GhHtmlElement {
                     }
                     return message;
                 });
-                console.log(messages)
+
                 conversation.messages.push(...messages);
             } catch(err) {
                 continue;
@@ -367,13 +366,10 @@ class GhConversations extends GhHtmlElement {
         
         conversation.messages = conversation.messages.filter((message, index, array) => array.findIndex(element=>(element.timestamp === message.timestamp)) === index);
 
-        console.log(conversation);
-
         return conversation;
     }
 
     addMessageToConversation(message) {
-        console.log('addMesageToConv')
         const newMessageTemplate = /*html*/`
         ${
             new Date(message.timestamp).getDate() !== new Date(this.conversation.messages[this.conversation.messages.indexOf(message) - 1]?.timestamp).getDate() ? `
