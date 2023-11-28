@@ -1,7 +1,17 @@
+gh-element[element-type="conversations"] {
+    height: 100%;
+}
+
 gh-conversations {
     width: 100%;
+    height: 100%;
+    padding: 15px;
 
     .multi-chat {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
 
         .chat {
             margin-bottom: 10px;
@@ -11,10 +21,20 @@ gh-conversations {
             justify-content: flex-start;
             width: 100%;
             height: 100%;
-            max-height: 600px;
+            max-height: 78%;
             overflow-y: auto;
             overflow-x: hidden;
             padding-top: 12px; // for messenger icon
+
+            .main_loader {
+                left: 50%;
+                top: 50%;
+
+                span {
+                    width: 50px;
+                    height: 50px;
+                }
+            }
             
             .date {
                 width: 100%;
@@ -44,6 +64,15 @@ gh-conversations {
                     z-index: -1;
                     top: 50%;
                 }
+            }
+            .page {
+                color: #0d99ff;
+                font-size: 13px;
+                padding: 2px 8px;
+                margin-left: 5px;
+                font-weight: 400;
+                border: 1px solid #0d99ff;
+                border-radius: 10px;
             }
 
             .message {
@@ -110,7 +139,7 @@ gh-conversations {
                     }
 
                     .header {
-                        padding-bottom: 5px;
+                        padding-bottom: 10px;
                         .name {
                             font-size: 14px;
                             font-weight: bold;
@@ -163,15 +192,66 @@ gh-conversations {
             }
 
             &__footer {
+                .messenger-select {
+                    option {
+                        ::first-letter {
+                            text-transform: uppercase;
+                        }
+                    }
+                }
+                
+                .chat_loader {
+                    position: absolute;
+                    top: 10px;
+                    right: 75px;
+                    display: none;
+                    span {
+                        width : 35px;
+                        height: 35px;
+                        border: 5px solid;
+                        border-color: #0d99ff transparent;
+                        border-radius: 50%;
+                        display: inline-block;
+                        animation: rotation 1s linear infinite;
+                    }
+                }
+            }
+
+            &__footer {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
                 width: 100%;
+                position: relative;
             }
         }
     }
 }
-.page_choose_dialog {
+
+.facebook_auth_btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .logout_button {
+        display: none;
+        outline: none;
+        background: #4c69ba;
+        color: #fff;
+        font-weight: 500;
+        font-size: 13px;
+        border: none;
+        height: 23px;
+        padding: 0 5px;
+        border-radius: 3px;
+
+        &:hover {
+            background-color: #5b7bd5;
+        }
+    }
+}
+
+.page_choose_dialog, .webhook_set_dialog {
     width: 100%;
     height: 100%;
     .dialog_wrapper {
@@ -185,5 +265,73 @@ gh-conversations {
         .save_btn {
             margin-top: 20px;
         }
+        .error {
+            color: red;
+            font-size: 14px;
+            text-align: left;
+            margin-top: 5px;
+        }
     }
+}
+
+.webhook_set_dialog {
+    .content {
+        padding: 40px;
+    }
+    .dialog_wrapper {
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        
+        .field_wrapper {
+            display: flex;
+        }
+    }
+}
+
+webhook-setter {
+    .success_message {
+        color: green;
+    }
+    
+}
+
+@media all and (max-width: 575px) {
+    gh-conversations {
+        padding: 5px;
+        .multi-chat {
+            .chat {
+                .message {
+                    .content {
+                        .header {
+                            display: flex;
+                            flex-wrap: wrap;
+                            align-items: center;
+                            padding-bottom: 5px;
+                            gap: 5px;
+
+                            .name, .page, .time {
+                                display: block;
+                            }
+                        }
+
+                        img {
+                            width: 90%;
+                        }
+
+                        audio {
+                            width: 90%;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@keyframes rotation {
+    0% { transform: rotate(0deg) }
+    100% { transform: rotate(360deg) }
 }

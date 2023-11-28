@@ -1,8 +1,6 @@
 import './conversations.webcomponent.js';
-import FacebookLogin from './facebookLogin.js';
-if(!customElements.get('facebook-login')){
-    customElements.define('facebook-login', FacebookLogin);
-}
+import './webhookSetter.directive.js';
+import './facebookLogin.directive.js';
 
 export default class GhConversationsData {
 
@@ -62,38 +60,15 @@ export default class GhConversationsData {
             type: 'general_setting',
             icon: 'menu',
             columns_list: [
-                [
-                    
-                ],
+                [],
                 [
                     {
                         title: "Messengers settings",
                         type: "header"
                     },
-                    // {
-                    //     type: 'html',
-                    //     showIf: 'data_model.messengers.facebook.enabled',
-                    //     data_model: function (fieldModel) {
-                    //       return fieldModel;
-                    //     },
-                    //     control:
-                    //       `<gh-input-web-component app-id="1232" gh-model="field_model.data_model.messengers.facebook.bot_token"></gh-input-web-component>`
-                    // },
                     {
                         type: 'ghElement',
-                        property: 'data_model.messengers.viber.enabled',
-                        data_model: () => {
-                            return {
-                                data_type: 'boolean',
-                                field_name: 'Viber',
-                                name_space: 'viber_enabled'
-                            }
-                        }
-                    },
-                    {
-                        type: 'ghElement',
-                        property: 'data_model.messengers.viber.user_id_field',
-                        showIf: 'data_model.messengers.viber.enabled',
+                        property: 'data_model.messengers_settings.viber.user_id_field',
                         data_model: (field) => {
                             return {
                                 data_type: 'field',
@@ -107,8 +82,7 @@ export default class GhConversationsData {
                     },
                     {
                         type: 'ghElement',
-                        property: 'data_model.messengers.viber.photo_field',
-                        showIf: 'data_model.messengers.viber.enabled',
+                        property: 'data_model.messengers_settings.viber.photo_field',
                         data_model: (field) => {
                             return {
                                 data_type: 'field',
@@ -122,31 +96,7 @@ export default class GhConversationsData {
                     },
                     {
                         type: 'ghElement',
-                        property: 'data_model.messengers.viber.bot_token',
-                        showIf: 'data_model.messengers.viber.enabled',
-                        data_model: () => {
-                            return {
-                                data_type: 'text',
-                                field_name: 'Bot token',
-                                name_space: 'viber_bot_token'
-                            }
-                        }
-                    },
-                    {
-                        type: 'ghElement',
-                        property: 'data_model.messengers.telegram.enabled',
-                        data_model: () => {
-                            return {
-                                data_type: 'boolean',
-                                field_name: 'Telegram',
-                                name_space: 'telegram_enabled'
-                            }
-                        }
-                    },
-                    {
-                        type: 'ghElement',
-                        property: 'data_model.messengers.telegram.user_id_field',
-                        showIf: 'data_model.messengers.telegram.enabled',
+                        property: 'data_model.messengers_settings.telegram.user_id_field',
                         data_model: (field) => {
                             return {
                                 data_type: 'field',
@@ -160,8 +110,7 @@ export default class GhConversationsData {
                     },
                     {
                         type: 'ghElement',
-                        property: 'data_model.messengers.telegram.photo_field',
-                        showIf: 'data_model.messengers.telegram.enabled',
+                        property: 'data_model.messengers_settings.telegram.photo_field',
                         data_model: (field) => {
                             return {
                                 data_type: 'field',
@@ -175,40 +124,7 @@ export default class GhConversationsData {
                     },
                     {
                         type: 'ghElement',
-                        property: 'data_model.messengers.telegram.bot_token',
-                        showIf: 'data_model.messengers.telegram.enabled',
-                        data_model: () => {
-                            return {
-                                data_type: 'text',
-                                field_name: 'Bot token',
-                                name_space: 'telegram_bot_token'
-                            }
-                        }
-                    },
-                    {
-                        type: 'ghElement',
-                        property: 'data_model.messengers.facebook.enabled',
-                        data_model: () => {
-                            return {
-                                data_type: 'boolean',
-                                field_name: 'Facebook',
-                                name_space: 'facebook_enabled'
-                            }
-                        }
-                    },
-                    {
-                        type: 'html',
-                        showIf: 'data_model.messengers.facebook.enabled',
-                        data_model: function (fieldModel) {
-                          return fieldModel;
-                        },
-                        control:
-                          `<facebook-login app-id="12323" gh-model="field_model.data_model.messengers.facebook.bot_token"></facebook-login>`
-                    },
-                    {
-                        type: 'ghElement',
-                        property: 'data_model.messengers.facebook.user_id_field',
-                        showIf: 'data_model.messengers.facebook.enabled',
+                        property: 'data_model.messengers_settings.facebook.user_id_field',
                         data_model: (field) => {
                             return {
                                 data_type: 'field',
@@ -222,8 +138,7 @@ export default class GhConversationsData {
                     },
                     {
                         type: 'ghElement',
-                        property: 'data_model.messengers.facebook.photo_field',
-                        showIf: 'data_model.messengers.facebook.enabled',
+                        property: 'data_model.messengers_settings.facebook.photo_field',
                         data_model: (field) => {
                             return {
                                 data_type: 'field',
@@ -236,42 +151,194 @@ export default class GhConversationsData {
                         }
                     },
                     {
-                        type: 'ghElement',
-                        property: 'data_model.messengers.facebook.bot_token',
-                        showIf: 'data_model.messengers.facebook.enabled',
-                        data_model: () => {
-                            return {
-                                data_type: 'text',
-                                field_name: 'Facebook Page token',
-                                name_space: 'facebook_page_token'
-                            }
-                        }
-                    },
-                    {
-                        type: 'ghElement',
-                        property: 'data_model.messengers.facebook.page_name',
-                        showIf: 'data_model.messengers.facebook.enabled',
-                        data_model: () => {
-                            return {
-                                data_type: 'text',
-                                field_name: 'Facebook Page Name',
-                                name_space: 'facebook_page_name'
-                            }
-                        }
-                    },
-                    {
-                        type: 'ghElement',
-                        property: 'data_model.messengers.facebook.page_id',
-                        showIf: 'data_model.messengers.facebook.enabled',
-                        data_model: () => {
-                            return {
-                                data_type: 'text',
-                                field_name: 'Facebook Page Id',
-                                name_space: 'facebook_page_id'
-                            }
-                        }
-                    }
+                      type: 'ghElement',
+                      property: 'data_model.user_name_field_id',
+                      data_model: (field) => {
+                          return {
+                              data_type: 'field',
+                              field_name: 'User name field',
+                              name_space: 'user_name_field',
+                              data_model: {
+                                  app_id: field.app_id
+                              }
+                          }
+                      }
+                  }
                 ],
+                [
+                    {
+                        type: 'html',
+                        class: 'option-column_750px',
+                        data_model: function (fieldModel) {
+                          return {
+                            patterns: [{
+                              property: 'messenger_name',
+                              type: 'text_opt',
+                              prop_name: 'Messenger',
+                              data_model: function(){
+                                return {
+                                    options: [
+                                        {
+                                            name: "Viber",
+                                            value: "viber",
+                                        },
+                                        {
+                                            name: "Telegram",
+                                            value: "telegram",
+                                        },
+                                        {
+                                            name: 'Facebook',
+                                            value: 'facebook'
+                                        }
+                                    ]
+                                };
+                              },
+                              display: true
+                            },
+                            {
+                                property: "messenger_settings",
+                                prop_name: "Settings",
+                                type: "additional_settings",
+                                display: false,
+                                data_model: function (option, scope) {
+                                    this.display = option.messenger_name === 'facebook';
+                                  return {
+                                    appId: fieldModel.app_id,
+                                    elementId: fieldModel.field_id,
+                                    settings: [
+                                      {
+                                        title: "Messenger",
+                                        type: "general_setting",
+                                        icon: "configuration",
+                                        columns_list: [
+                                          [
+                                            {
+                                              title: "Page Settings",
+                                              type: "header",
+                                            },
+                                            {
+                                                type: 'html',
+                                                data_model: function (fieldModel) {
+                                                  return {};
+                                                },
+                                                control:
+                                                  `<facebook-login app-id="{{appId}}" field-id="{{elementId}}" ng-model="fieldModel"></facebook-login>`
+                                            },
+        
+                                          ],
+        
+        
+                                        ],
+                                      },
+                                    ],
+                                  };
+                                },
+                              },{
+                                property: "messenger_settings",
+                                prop_name: "Settings",
+                                type: "additional_settings",
+                                display: false,
+                                data_model: function (option, scope) {
+                                    this.display = option.messenger_name === 'viber';
+                                  return {
+                                    appId: fieldModel.app_id,
+                                    elementId: fieldModel.field_id,
+                                    settings: [
+                                      {
+                                        title: "Messenger",
+                                        type: "general_setting",
+                                        icon: "configuration",
+                                        columns_list: [
+                                          [
+                                            {
+                                              title: "Page Settings",
+                                              type: "header",
+                                            },
+                                            {
+                                              showIf: "photo_field === 1",
+                                              type: "ghElement",
+                                              property: "messenger",
+                                              data_model: function () {
+                                                  return {
+                                                      data_type: "text",
+                                                      field_name: "Messenger",
+                                                      name_space: "messenger",
+                                                      field_value: "viber"
+                                                  };
+                                              },
+                                            },
+                                            {
+                                              type: 'html',
+                                              data_model: function (fieldModel) {
+                                                return {};
+                                              },
+                                              control:
+                                                `<webhook-setter app-id="{{appId}}" field-id="{{elementId}}" ng-model="fieldModel"></webhook-setter>`
+                                            },
+        
+                                          ],
+                                        ],
+                                      },
+                                    ],
+                                  };
+                                },
+                              },
+                              {
+                                property: "messenger_settings",
+                                prop_name: "Settings",
+                                type: "additional_settings",
+                                display: false,
+                                data_model: function (option, scope) {
+                                    this.display = option.messenger_name === 'telegram';
+                                  return {
+                                    appId: fieldModel.app_id,
+                                    elementId: fieldModel.field_id,
+                                    settings: [
+                                      {
+                                        title: "Messenger",
+                                        type: "general_setting",
+                                        icon: "configuration",
+                                        columns_list: [
+                                          [
+                                            {
+                                              title: "Page Settings",
+                                              type: "header",
+                                            },
+                                            {
+                                              showIf: "photo_field === 1",
+                                              type: "ghElement",
+                                              property: "messenger",
+                                              data_model: function () {
+                                                  return {
+                                                      data_type: "text",
+                                                      field_name: "Messenger",
+                                                      name_space: "messenger",
+                                                      field_value: "telegram"
+                                                  };
+                                              },
+                                            },
+                                            {
+                                              type: 'html',
+                                              data_model: function (fieldModel) {
+                                                return {};
+                                              },
+                                              control:
+                                                `<webhook-setter app-id="{{appId}}" field-id="{{elementId}}" ng-model="fieldModel"></webhook-setter>`
+                                            },
+        
+                                          ],
+                                        ],
+                                      },
+                                    ],
+                                  };
+                                },
+                              }]
+                          };
+                        },
+                        control:
+                          '<gh-option-table items="fieldModel.data_model.messengers" pattern="field_model.patterns" ></gh-option-table>'
+                    }
+                ]
             ]
         }];
     }
