@@ -68,7 +68,7 @@ angular
             $scope.setLoginData = async () => {
         
               // Here we need get long lived access token for not generate it every time
-              let response = await fetch(`https://gudhub-node-server.ngrok.io/conversation/get-token/facebook?access_token=${$scope.user.accessToken}`, {
+              let response = await fetch(`https://development.gudhub.com/api/services/dev/get-token/facebook?access_token=${$scope.user.accessToken}`, {
                 method: 'GET'
               });
         
@@ -125,7 +125,7 @@ angular
                         parentScope.ngModel.messenger = 'facebook';
 
                         try {
-                          await fetch('https://gudhub-node-server.ngrok.io/conversation/set-webhook', {
+                          await fetch('https://development.gudhub.com/api/services/dev/set-webhook', {
                               method: 'POST',
                               headers: {
                                   'Content-Type': 'application/json'

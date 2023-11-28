@@ -53,7 +53,7 @@ angular
                   $scope.setWebhook = async () => {
                     if($scope.fieldModel.bot_token) {
                       try {
-                        await fetch('https://gudhub-node-server.ngrok.io/conversation/set-webhook', {
+                        await fetch('https://development.gudhub.com/api/services/dev/set-webhook', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -67,7 +67,7 @@ angular
                             })
                         });
                         
-                          const response = await fetch(`https://gudhub-node-server.ngrok.io/conversation/get-page-info?messenger=${$scope.fieldModel.messenger}&token=${$scope.fieldModel.bot_token}`, {
+                          const response = await fetch(`https://development.gudhub.com/api/services/dev/get-page-info?messenger=${$scope.fieldModel.messenger}&token=${$scope.fieldModel.bot_token}`, {
                             method: 'GET',
                           });
 
