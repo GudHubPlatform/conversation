@@ -189,7 +189,7 @@ class GhConversations extends GhHtmlElement {
 
             const gudhubFile = await this.uploadFileToGudHub(file);
 
-            const response = await fetch('https://development.gudhub.com/api/services/dev/send-attachment', {
+            const response = await fetch(`${gudhub.config.node_server_url}/conversation/send-attachment`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -215,7 +215,7 @@ class GhConversations extends GhHtmlElement {
             uploadInput.value = '';
 
         } else {
-            const response = await fetch('https://development.gudhub.com/api/services/dev/send-message', {
+            const response = await fetch(`${gudhub.config.node_server_url}/conversation/send-message`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -304,14 +304,14 @@ class GhConversations extends GhHtmlElement {
             }
 
             const messenger = this.model.data_model.messengers[index].messenger_name;
-            const response = await fetch(`https://development.gudhub.com/api/services/dev/get-conversation?app_id=${this.app_id}&field_id=${this.field_id}&user_id=${encodeURIComponent(this.messengers[index].messenger_user_id)}&messenger=${messenger}`);
+            const response = await fetch(`${gudhub.config.node_server_url}/conversation/get-conversation?app_id=${this.app_id}&field_id=${this.field_id}&user_id=${encodeURIComponent(this.messengers[index].messenger_user_id)}&messenger=${messenger}`);
             try {
                 const json = await response.json();
                 if(!json) {
                     continue;
                 }
                 if(!json.user) {
-                    const userResponse = await fetch(`https://development.gudhub.com/api/services/dev/update-messenger-user`, {
+                    const userResponse = await fetch(`${gudhub.config.node_server_url}/conversation/update-messenger-user`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
