@@ -24,8 +24,8 @@ class GhConversations extends GhHtmlElement {
             
             this.messengers[index] = {
                 token: messenger.messenger_settings.bot_token,
-                messenger_user_id: await gudhub.getFieldValue(this.app_id, this.item_id, this.model.data_model.messengers[index].user_id_field),
-                photo_field_id: this.model.data_model.messengers[index].photo_field
+                messenger_user_id: await gudhub.getFieldValue(this.app_id, this.item_id, this.model.data_model.messengers[index].messenger_settings.user_id_field),
+                photo_field_id: this.model.data_model.messengers[index].messenger_settings.photo_field
             }
         }
 
