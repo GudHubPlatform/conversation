@@ -1,5 +1,5 @@
 <div class="avatar">
-    ${ Boolean(url) ? 
+    ${ url.indexOf('gudhub') > 0 ? 
         `<img src="${url}" alt="${name}"/>` :
         `<div class="avatar_wrapper ${bgClass}">
             <span>${name.charAt(0)}</span>
