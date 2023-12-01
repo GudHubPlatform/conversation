@@ -1,3 +1,4 @@
+import './conversationAvatar/conversationAvatar.js';
 import './conversations.webcomponent.js';
 import './webhookSetter.directive.js';
 import './facebookLogin.directive.js';
@@ -60,109 +61,20 @@ export default class GhConversationsData {
             type: 'general_setting',
             icon: 'menu',
             columns_list: [
-                [],
                 [
-                    {
-                        title: "Messengers settings",
-                        type: "header"
-                    },
-                    {
-                        type: 'ghElement',
-                        property: 'data_model.messengers_settings.viber.user_id_field',
-                        data_model: (field) => {
-                            return {
-                                data_type: 'field',
-                                field_name: 'Viber user id field',
-                                name_space: 'viber_user_id_field',
-                                data_model: {
-                                    app_id: field.app_id
-                                }
+                  {
+                    type: 'ghElement',
+                    property: 'data_model.user_name_field_id',
+                    data_model: (field) => {
+                        return {
+                            data_type: 'field',
+                            field_name: 'User name field',
+                            name_space: 'user_name_field',
+                            data_model: {
+                                app_id: field.app_id
                             }
                         }
-                    },
-                    {
-                        type: 'ghElement',
-                        property: 'data_model.messengers_settings.viber.photo_field',
-                        data_model: (field) => {
-                            return {
-                                data_type: 'field',
-                                field_name: 'Viber photo field',
-                                name_space: 'viber_photo_field',
-                                data_model: {
-                                    app_id: field.app_id
-                                }
-                            }
-                        }
-                    },
-                    {
-                        type: 'ghElement',
-                        property: 'data_model.messengers_settings.telegram.user_id_field',
-                        data_model: (field) => {
-                            return {
-                                data_type: 'field',
-                                field_name: 'Telegram user id field',
-                                name_space: 'telegram_user_id_field',
-                                data_model: {
-                                    app_id: field.app_id
-                                }
-                            }
-                        }
-                    },
-                    {
-                        type: 'ghElement',
-                        property: 'data_model.messengers_settings.telegram.photo_field',
-                        data_model: (field) => {
-                            return {
-                                data_type: 'field',
-                                field_name: 'Telegram photo field',
-                                name_space: 'telegram_photo_field',
-                                data_model: {
-                                    app_id: field.app_id
-                                }
-                            }
-                        }
-                    },
-                    {
-                        type: 'ghElement',
-                        property: 'data_model.messengers_settings.facebook.user_id_field',
-                        data_model: (field) => {
-                            return {
-                                data_type: 'field',
-                                field_name: 'Facebook user id field',
-                                name_space: 'facebook_user_id_field',
-                                data_model: {
-                                    app_id: field.app_id
-                                }
-                            }
-                        }
-                    },
-                    {
-                        type: 'ghElement',
-                        property: 'data_model.messengers_settings.facebook.photo_field',
-                        data_model: (field) => {
-                            return {
-                                data_type: 'field',
-                                field_name: 'Facebook photo field',
-                                name_space: 'facebook_photo_field',
-                                data_model: {
-                                    app_id: field.app_id
-                                }
-                            }
-                        }
-                    },
-                    {
-                      type: 'ghElement',
-                      property: 'data_model.user_name_field_id',
-                      data_model: (field) => {
-                          return {
-                              data_type: 'field',
-                              field_name: 'User name field',
-                              name_space: 'user_name_field',
-                              data_model: {
-                                  app_id: field.app_id
-                              }
-                          }
-                      }
+                    }
                   }
                 ],
                 [
@@ -223,7 +135,35 @@ export default class GhConversationsData {
                                                 },
                                                 control:
                                                   `<facebook-login app-id="{{appId}}" field-id="{{elementId}}" ng-model="fieldModel"></facebook-login>`
-                                            },
+                                             },
+                                             {
+                                              type: 'ghElement',
+                                              property: 'user_id_field',
+                                              data_model: (field) => {
+                                                  return {
+                                                      data_type: 'field',
+                                                      field_name: 'Facebook user id field',
+                                                      name_space: 'facebook_user_id_field',
+                                                      data_model: {
+                                                          app_id: fieldModel.app_id
+                                                      }
+                                                  }
+                                              }
+                                          },
+                                          {
+                                              type: 'ghElement',
+                                              property: 'photo_field',
+                                              data_model: (field) => {
+                                                  return {
+                                                      data_type: 'field',
+                                                      field_name: 'Facebook photo field',
+                                                      name_space: 'facebook_photo_field',
+                                                      data_model: {
+                                                          app_id: fieldModel.app_id
+                                                      }
+                                                  }
+                                              }
+                                          }
         
                                           ],
         
@@ -255,6 +195,14 @@ export default class GhConversationsData {
                                               type: "header",
                                             },
                                             {
+                                              type: 'html',
+                                              data_model: function (fieldModel) {
+                                                return {};
+                                              },
+                                              control:
+                                                `<webhook-setter app-id="{{appId}}" field-id="{{elementId}}" ng-model="fieldModel"></webhook-setter>`
+                                            },
+                                            {
                                               showIf: "photo_field === 1",
                                               type: "ghElement",
                                               property: "messenger",
@@ -268,12 +216,32 @@ export default class GhConversationsData {
                                               },
                                             },
                                             {
-                                              type: 'html',
-                                              data_model: function (fieldModel) {
-                                                return {};
-                                              },
-                                              control:
-                                                `<webhook-setter app-id="{{appId}}" field-id="{{elementId}}" ng-model="fieldModel"></webhook-setter>`
+                                              type: 'ghElement',
+                                              property: 'user_id_field',
+                                              data_model: (field) => {
+                                                  return {
+                                                      data_type: 'field',
+                                                      field_name: 'Viber user id field',
+                                                      name_space: 'viber_user_id_field',
+                                                      data_model: {
+                                                          app_id: fieldModel.app_id
+                                                      }
+                                                  }
+                                              }
+                                            },
+                                            {
+                                              type: 'ghElement',
+                                              property: 'photo_field',
+                                              data_model: (field) => {
+                                                  return {
+                                                      data_type: 'field',
+                                                      field_name: 'Viber photo field',
+                                                      name_space: 'viber_photo_field',
+                                                      data_model: {
+                                                          app_id: fieldModel.app_id
+                                                      }
+                                                  }
+                                              }
                                             },
         
                                           ],
@@ -324,6 +292,34 @@ export default class GhConversationsData {
                                               },
                                               control:
                                                 `<webhook-setter app-id="{{appId}}" field-id="{{elementId}}" ng-model="fieldModel"></webhook-setter>`
+                                            },
+                                            {
+                                              type: 'ghElement',
+                                              property: 'user_id_field',
+                                              data_model: (field) => {
+                                                  return {
+                                                      data_type: 'field',
+                                                      field_name: 'Telegram user id field',
+                                                      name_space: 'telegram_user_id_field',
+                                                      data_model: {
+                                                          app_id: fieldModel.app_id
+                                                      }
+                                                  }
+                                              }
+                                            },
+                                            {
+                                              type: 'ghElement',
+                                              property: 'photo_field',
+                                              data_model: (field) => {
+                                                  return {
+                                                      data_type: 'field',
+                                                      field_name: 'Telegram photo field',
+                                                      name_space: 'telegram_photo_field',
+                                                      data_model: {
+                                                          app_id: fieldModel.app_id
+                                                      }
+                                                  }
+                                              }
                                             },
         
                                           ],

@@ -103,9 +103,8 @@ gh-conversations {
                         bottom: -8px;
                         right: -6px;
 
-                        svg {
-                            width: 100%;
-                            height: 100%;
+                        img {
+                            z-index: 1;
                         }
                     }
 
@@ -223,6 +222,49 @@ gh-conversations {
                 justify-content: space-between;
                 width: 100%;
                 position: relative;
+            }
+        }
+    }
+
+    conversation-avatar {
+        .avatar {
+            background: none;
+            &_wrapper {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                height: 100%;
+    
+                &.bg-black {
+                    background: #575757;
+                }
+    
+                &.bg-red {
+                    background: #FF3333;
+                }
+
+                &.bg-blue {
+                    background: #0d99ff;
+                }
+
+                &.bg-green {
+                    background: #10cfbd;
+                }
+
+                &.bg-gray {
+                    background: #d9d9d9;
+                }
+
+                &.bg-yellow {
+                    background: #ffea00;
+                }
+                
+                span {
+                    font-size: 30px;
+                    font-weight: 400;
+                    color: #fff;
+                }
             }
         }
     }

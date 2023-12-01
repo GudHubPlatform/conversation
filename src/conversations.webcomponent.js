@@ -24,8 +24,8 @@ class GhConversations extends GhHtmlElement {
             
             this.messengers[index] = {
                 token: messenger.messenger_settings.bot_token,
-                messenger_user_id: await gudhub.getFieldValue(this.app_id, this.item_id, this.model.data_model.messengers_settings[messenger.messenger_name].user_id_field),
-                photo_field_id: this.model.data_model.messengers_settings[messenger.messenger_name].photo_field
+                messenger_user_id: await gudhub.getFieldValue(this.app_id, this.item_id, this.model.data_model.messengers[index].user_id_field),
+                photo_field_id: this.model.data_model.messengers[index].photo_field
             }
         }
 
@@ -59,51 +59,51 @@ class GhConversations extends GhHtmlElement {
 
         gudhub.on('conversations_message_received', { app_id: this.app_id, field_id: this.field_id }, async (_event, response) => {
             const model = await gudhub.getField(this.app_id, this.field_id);
-        if(this.app_id == response.data.app_id && this.field_id == response.data.field_id && this.conversation.users.find((user) => user.user_id == response.data.messenger_user_id)) {
-            const message = response.data.message;
-            message.messenger = response.data.messenger;
-            if(message.type === 'attachment') {
-                message.type = this.getFileType({ name: message.content });
-            }
-
-            const findedMessage = this.conversation.messages.find(mess => mess.timestamp == message.timestamp);
-            if(!findedMessage) {
-                this.conversation.messages.push(message);
-            }
-
-
-            const idsFromMessengers = Object.keys(this.messengers).reduce((acc, messenger) => {
-                acc.push(this.messengers[messenger].messenger_user_id);
-                return acc;
-            }, []);
-    
-            const conversationGudHubUsersIds = this.conversation.messages.reduce((acc, message) => {
-                if(!idsFromMessengers.includes(message.user_id) && !acc.includes(message.user_id)) {
-                    acc.push(message.user_id);
+            if(this.app_id == response.data.app_id && this.field_id == response.data.field_id && this.conversation.users.find((user) => user.user_id == response.data.messenger_user_id)) {
+                const message = response.data.message;
+                message.messenger = response.data.messenger;
+                if(message.type === 'attachment') {
+                    message.type = this.getFileType({ name: message.content });
                 }
-                return acc;
-            }, []);
-    
-            const gudhubUsers = await Promise.all(conversationGudHubUsersIds.map(async (user_id) => {
-                const user = await gudhub.getUserById(user_id);
-                return user;
-            }));
 
-            if(gudhubUsers) {
-            
-                const findedUser = this.conversation.users.find(user => user.user_id === gudhubUsers[0].user_id);
-
-                if(!findedUser) {
-                    this.conversation.users.push(...gudhubUsers);
+                const findedMessage = this.conversation.messages.find(mess => mess.timestamp == message.timestamp);
+                if(!findedMessage) {
+                    this.conversation.messages.push(message);
                 }
-            }
 
-            const findedPage = model.data_model.messengers.find(m => m.messenger_settings.page_id === response.data.page_id);
-            message.page_name = findedPage.messenger_settings.page_name;
 
-            this.addMessageToConversation(message);
+                const idsFromMessengers = Object.keys(this.messengers).reduce((acc, messenger) => {
+                    acc.push(this.messengers[messenger].messenger_user_id);
+                    return acc;
+                }, []);
+        
+                const conversationGudHubUsersIds = this.conversation.messages.reduce((acc, message) => {
+                    if(!idsFromMessengers.includes(message.user_id) && !acc.includes(message.user_id)) {
+                        acc.push(message.user_id);
+                    }
+                    return acc;
+                }, []);
+        
+                const gudhubUsers = await Promise.all(conversationGudHubUsersIds.map(async (user_id) => {
+                    const user = await gudhub.getUserById(user_id);
+                    return user;
+                }));
 
-            this.scrollChatToBottom();
+                if(gudhubUsers) {
+                
+                    const findedUser = this.conversation.users.find(user => user.user_id === gudhubUsers[0].user_id);
+
+                    if(!findedUser) {
+                        this.conversation.users.push(...gudhubUsers);
+                    }
+                }
+
+                const findedPage = model.data_model.messengers.find(m => m.messenger_settings.page_id === response.data.page_id);
+                message.page_name = findedPage.messenger_settings.page_name;
+
+                this.addMessageToConversation(message);
+
+                this.scrollChatToBottom();
             }
         });
     }
@@ -384,18 +384,16 @@ class GhConversations extends GhHtmlElement {
             <div class="user">
                 <div class="messenger">
                     ${
-                        message.messenger === 'telegram' ? '<img src="/conversation/public/images/telegram.svg" alt="Telegram" />' : ''
+                        message.messenger === 'telegram' ? '<img src="https://gudhub.com/modules/conversation/public/images/telegram.svg" alt="Telegram" />' : ''
                     }
                     ${
-                        message.messenger === 'viber' ? '<img src="/conversation/public/images/viber.svg" alt="Viber" />' : ''
+                        message.messenger === 'viber' ? '<img src="https://gudhub.com/modules/conversation/public/images/viber.svg" alt="Viber" />' : ''
                     }
                     ${
-                        message.messenger === 'facebook' ? '<img src="/conversation/public/images/facebook.svg" alt="Facebook" />' : ''
+                        message.messenger === 'facebook' ? '<img src="https://gudhub.com/modules/conversation/public/images/facebook.svg" alt="Facebook" />' : ''
                     }
                 </div>
-                <div class="avatar">
-                    <img src="${this.conversation.users.find(user => user.user_id == message.user_id)?.avatar_512}" alt="">
-                </div>
+                <conversation-avatar app-id="${appId}" name="${conversation.users.find(user => user.user_id == message.user_id)?.fullname}" url="${conversation.users.find(user => user.user_id == message.user_id)?.avatar_512}"></conversation-avatar>
             </div>
             <div class="content">
                 <div class="header">

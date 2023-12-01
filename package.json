@@ -1,5 +1,5 @@
 {
-  "name": "@gudhub/input",
+  "name": "@gudhub/conversations",
   "version": "1.0.0",
   "description": "",
   "main": "src/entry.js",
@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@gudhub/gh-html-element": "^1.4.1"
+    "@gudhub/gh-html-element": "^1.4.4"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^4.0.0",

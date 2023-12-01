@@ -17,18 +17,16 @@
                         <div class="user">
                             <div class="messenger">
                                 ${
-                                    message.messenger === 'telegram' ? '<img src="./public/images/telegram.svg" alt="Telegram" />' : ''
+                                    message.messenger === 'telegram' ? '<img src="https://gudhub.com/modules/conversation/public/images/telegram.svg" alt="Telegram" />' : ''
                                 }
                                 ${
-                                    message.messenger === 'viber' ? '<img src="./public/images/viber.svg" alt="Viber" />' : ''
+                                    message.messenger === 'viber' ? '<img src="https://gudhub.com/modules/conversation/public/images/viber.svg" alt="Viber" />' : ''
                                 }
                                 ${
-                                    message.messenger === 'facebook' ? '<img src="./public/images/facebook.svg" alt="Facebook" />' : ''
+                                    message.messenger === 'facebook' ? '<img src="https://gudhub.com/modules/conversation/public/images/facebook.svg" alt="Facebook" />' : ''
                                 }
                             </div>
-                            <div class="avatar">
-                                <img src="${conversation.users.find(user => user.user_id == message.user_id)?.avatar_512}" alt="">
-                            </div>
+                            <conversation-avatar app-id="${appId}" name="${conversation.users.find(user => user.user_id == message.user_id)?.fullname}" url="${conversation.users.find(user => user.user_id == message.user_id)?.avatar_512}"></conversation-avatar>
                         </div>
                         <div class="content">
                             <div class="header">
