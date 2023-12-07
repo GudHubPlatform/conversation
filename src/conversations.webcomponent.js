@@ -393,7 +393,7 @@ class GhConversations extends GhHtmlElement {
                         message.messenger === 'facebook' ? '<img src="https://gudhub.com/modules/conversation/public/images/facebook.svg" alt="Facebook" />' : ''
                     }
                 </div>
-                <conversation-avatar app-id="${appId}" name="${conversation.users.find(user => user.user_id == message.user_id)?.fullname}" url="${conversation.users.find(user => user.user_id == message.user_id)?.avatar_512}"></conversation-avatar>
+                <conversation-avatar app-id="${this.app_id}" name="${this.conversation.users.find(user => user.user_id == message.user_id)?.fullname}" url="${this.conversation.users.find(user => user.user_id == message.user_id)?.avatar_512}"></conversation-avatar>
             </div>
             <div class="content">
                 <div class="header">
