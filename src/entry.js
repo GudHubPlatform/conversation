@@ -1,4 +1,5 @@
 import './conversationAvatar/conversationAvatar.js';
+import './ghChat/ghChat.js';
 import './conversations.webcomponent.js';
 import './webhookSetter.directive.js';
 import './facebookLogin.directive.js';

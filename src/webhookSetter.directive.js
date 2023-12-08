@@ -1,4 +1,4 @@
-angular
+gudhub.ghconstructor.angular
   .module("webhookSetter", [])
 
   .directive("webhookSetter", [
@@ -11,15 +11,11 @@ angular
           fieldId: "@",
           ngModel: "=?",
         },
-        template:
-          /*html*/`
-          <div class="btn_webhook gh-btn gh-btn-blue gh-btn-bg" ng-if="!ngModel.webhookSetted" ng-click="showDialog()"> Set Webhook </div>
-          <div ng-if="ngModel.webhookSetted" class="success_message"> Webhook was setted successfully!</div>
-          `,
 
         controller: [
           "$scope",
           function ($scope) {
+            console.log('WORK!!!')
             $scope.isWebhookSet = false;
             
             $scope.showDialog = () => {
@@ -98,60 +94,12 @@ angular
 
           },
         ],
+        template:
+          /*html*/`
+          <span>TEST</span>
+          <div class="btn_webhook gh-btn gh-btn-blue gh-btn-bg" ng-if="!ngModel.webhookSetted" ng-click="showDialog()"> Set Webhook </div>
+          <div ng-if="ngModel.webhookSetted" class="success_message"> Webhook was setted successfully!</div>
+          `,
       }
     }
-  ])
-        
-export default class webhookSetter extends GhHtmlElement {
-
-    constructor() {
-        super();
-        
-    }
-
-    onInit() {
-      const self = this;
-      const html = /*html*/`
-      <div class="btn_webhook gh-btn inline gh-btn-blue"> Set Webhook </div>
-      `
-      super.render(html);
-
-      document.querySelector('.btn_webhook').addEventListener('click', () =>{
-        this.setWebhook();
-      });
-
-      this.ngModel = this.getAttribute('ng-model');
-      console.log(this.scope)
-    }
-    setWebhook() {
-      console.log("set webhook")
-      const ghDialog = gudhub.ghconstructor.angularInjector.get('GhDialog');
-        
-      ghDialog.show({
-        position: 'center_event_position',
-        class: 'page_choose_dialog',
-        toolbar: false,
-        template: {
-          toolbar: '',
-          content: /*html*/`
-            <div class="dialog_wrapper">
-            <span class="field-wrap-name"><span class="gh_element_name">Token</span></span>
-              <gh-input gh-editable="true" gh-data-type="text" ng-model="token" type="text" class="page"></gh-input>
-              <button class="btn save_btn btn-grean" ng-click="applySettings()"> Save </button>
-            </div>`
-        },
-
-        locals: {
-          fieldModel: this.ngModel
-        },
-
-        controller: ['$scope', "fieldModel", function($scope, fieldModel) {
-          console.log(fieldModel)
-          
-        }]
-      })
-
-
-    }
-
-}
+  ]);

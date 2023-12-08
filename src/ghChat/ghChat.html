@@ -1,0 +1,53 @@
+<div class="chat">
+    ${
+        conversation.messages ?
+        conversation.messages.reduce((html, message) => {
+            return html + `
+                ${
+                    new Date(message.timestamp).getDate() !== new Date(conversation.messages[conversation.messages.indexOf(message) - 1]?.timestamp).getDate() ? `
+                        <div class="date"><span>${new Date(message.timestamp).toLocaleDateString("en-US", {
+                            weekday: "long",
+                            month: "long",
+                            day: "numeric",
+                          })}</span></div>
+                    ` : ''
+                }
+                <div class="message ${activeUserId == message.user_id ? 'me' : ''}">
+                    <div class="user">
+                        <div class="messenger">
+                            ${
+                                message.messenger === 'telegram' ? '<img src="https://gudhub.com/modules/conversation/public/images/telegram.svg" alt="Telegram" />' : ''
+                            }
+                            ${
+                                message.messenger === 'viber' ? '<img src="https://gudhub.com/modules/conversation/public/images/viber.svg" alt="Viber" />' : ''
+                            }
+                            ${
+                                message.messenger === 'facebook' ? '<img src="https://gudhub.com/modules/conversation/public/images/facebook.svg" alt="Facebook" />' : ''
+                            }
+                        </div>
+                        <conversation-avatar app-id="${appId}" name="${conversation.users.find(user => user.user_id == message.user_id)?.fullname}" url="${conversation.users.find(user => user.user_id == message.user_id)?.avatar_512}"></conversation-avatar>
+                    </div>
+                    <div class="content">
+                        <div class="header">
+                            <span class="name">${conversation.users.find(user => user.user_id == message.user_id)?.fullname || 'Not Found'}</span>
+                            <span class="page">${message.page_name}</span>
+                            <span class="time">
+                                ${new Date(message.timestamp).toLocaleTimeString(navigator.language, {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })}
+                            </span>
+                        </div>
+                        <p class="message">
+                            ${ !message.type ? message.content : '' }
+                            ${ message.type === 'image' ? `<img src="${message.content}" alt="">` : ''}
+                            ${ message.type === 'video' ? `<video src="${message.content}" controls></video>` : ''}
+                            ${ message.type === 'audio' ? `<audio src="${message.content}" controls></audio>` : ''}
+                            ${ message.type === 'file' ? `<a href="${message.content}" download>Download file</a>` : ''}
+                        </p>
+                    </div>
+                </div>
+            `
+        }, '') : ''
+    }
+</div>

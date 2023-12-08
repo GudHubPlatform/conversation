@@ -79,7 +79,15 @@ angular
               });
         
               pages = await pages.json();
-        
+
+              let permissions =  await fetch(`https://graph.facebook.com/v18.0/me/permissions?access_token=${token}`, {
+                method: 'GET'
+              });
+
+              permissions = await permissions.json();
+
+              const permissionsArray = permissions.data.map((scope) => scope.permission);
+
               const ghDialog = gudhub.ghconstructor.angularInjector.get('GhDialog');
         
               ghDialog.show({
@@ -137,7 +145,8 @@ angular
                                   messenger: parentScope.ngModel.messenger,
                                   gudhub_user_id: gudhub.storage.getUser().user_id,
                                   page_name: parentScope.ngModel.page_name,
-                                  page_id: findedPage.value
+                                  page_id: findedPage.value,
+                                  scopes: permissionsArray
                               })
                           });
             

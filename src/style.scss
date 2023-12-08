@@ -7,6 +7,11 @@ gh-conversations {
     height: 100%;
     padding: 15px;
 
+    gh-chat {
+        height: 100%;
+        max-height: 78%;
+    }
+
     .multi-chat {
         height: 100%;
         display: flex;
@@ -21,7 +26,6 @@ gh-conversations {
             justify-content: flex-start;
             width: 100%;
             height: 100%;
-            max-height: 78%;
             overflow-y: auto;
             overflow-x: hidden;
             padding-top: 12px; // for messenger icon
@@ -69,10 +73,10 @@ gh-conversations {
                 color: #0d99ff;
                 font-size: 13px;
                 padding: 2px 8px;
-                margin-left: 5px;
                 font-weight: 400;
                 border: 1px solid #0d99ff;
                 border-radius: 10px;
+                margin-right: 5px;
             }
 
             .message {
@@ -142,11 +146,11 @@ gh-conversations {
                         .name {
                             font-size: 14px;
                             font-weight: bold;
+                            margin-right: 5px;
                         }
                         .time {
                             color: #616061;
                             font-size: 14px;
-                            margin-left: 5px;
                         }
                     }
                     

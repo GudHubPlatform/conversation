@@ -1,0 +1,272 @@
+import GhHtmlElement from '@gudhub/gh-html-element';
+import html from './ghChat.html';
+
+class GhChat extends GhHtmlElement {
+
+    constructor() {
+        super();
+    }
+
+    async onInit() {
+
+        this.getAttributes();
+
+        this.activeUserId = gudhub.storage.user.user_id;
+        this.model = await gudhub.getField(this.app_id, this.field_id);
+
+        this.messengers = document.querySelector('gh-conversations').messengers;
+
+        if(!this.model.data_model.messengers) return;
+
+        console.log('ONE INIT?')
+
+        this.conversation = await this.getConversations();
+
+        console.log(this.conversation)
+
+        if(this.conversation.messages) {
+            this.addUserToConversation();
+        }
+
+        super.render(html);
+
+        this.addSubscriberToNewMessage();
+
+        this.scrollChatToBottom();
+    }
+
+    async addUserToConversation(){
+
+        const idsFromMessengers = Object.keys(this.messengers).reduce((acc, messenger) => {
+            console.log(acc)
+            if(!acc.includes(this.messengers[messenger].messenger_user_id)) {
+                acc.push(this.messengers[messenger].messenger_user_id);
+            }
+
+            return acc;
+        }, []);
+
+        console.log(idsFromMessengers)
+
+        const conversationGudHubUsersIds = this.conversation.messages.reduce((acc, message) => {
+            if(!idsFromMessengers.includes(message.user_id) && !acc.includes(message.user_id)) {
+                acc.push(message.user_id);
+            }
+            return acc;
+        }, []);
+
+        console.log(conversationGudHubUsersIds)
+
+        const gudhubUsers = await Promise.all(conversationGudHubUsersIds.map(async (user_id) => {
+            const user = await gudhub.getUserById(user_id);
+            return user;
+        }));
+
+        if(gudhubUsers.length > 0) {
+
+            const findedUser = this.conversation.users.find(user => user.user_id === gudhubUsers[0].user_id);
+
+            if(!findedUser) {
+                this.conversation.users.push(...gudhubUsers);
+            }
+        }
+
+    }
+
+    addSubscriberToNewMessage() {
+        gudhub.on('conversations_message_received', { app_id: this.app_id, field_id: this.field_id }, async (_event, response) => {
+            const model = await gudhub.getField(this.app_id, this.field_id);
+            if(this.app_id == response.data.app_id && this.field_id == response.data.field_id && this.conversation.users.find((user) => user.user_id == response.data.messenger_user_id)) {
+                const message = response.data.message;
+                message.messenger = response.data.messenger;
+                if(message.type === 'attachment') {
+                    message.type = this.getFileType({ name: message.content });
+                }
+
+                const findedMessage = this.conversation.messages.find(mess => mess.timestamp == message.timestamp);
+                if(!findedMessage) {
+                    this.conversation.messages.push(message);
+                }
+
+                this.addUserToConversation();
+
+                const findedPage = model.data_model.messengers.find(m => m.messenger_settings.page_id === response.data.page_id);
+                message.page_name = findedPage.messenger_settings.page_name;
+
+                this.addMessageToConversation(message);
+
+                this.scrollChatToBottom();
+            }
+        });
+    }
+
+    getAttributes() {
+        this.app_id = this.getAttribute('app-id');
+        this.item_id = this.getAttribute('item-id');
+        this.field_id = this.getAttribute('field-id');
+    }
+
+    scrollChatToBottom() {
+        this.querySelector('.chat').scrollTop = this.querySelector('.chat').scrollHeight;
+    }
+
+    async getConversations() {
+        console.log('getCONV?')
+        const conversation = {
+            app_id: this.app_id,
+            field_id: this.field_id,
+            gudhub_user_id: this.activeUserId,
+            messages: [],
+            users: []
+        }
+
+        for(const index of Object.keys(this.messengers)) {
+            
+            if(!this.messengers[index].messenger_user_id) {
+                continue;
+            }
+
+            const messenger = this.model.data_model.messengers[index].messenger_name;
+            const response = await fetch(`${gudhub.config.node_server_url}/conversation/get-conversation?app_id=${this.app_id}&field_id=${this.field_id}&user_id=${encodeURIComponent(this.messengers[index].messenger_user_id)}&messenger=${messenger}`);
+            try {
+                const json = await response.json();
+                if(!json) {
+                    continue;
+                }
+                if(!json.user) {
+                    const userResponse = await fetch(`${gudhub.config.node_server_url}/conversation/update-messenger-user`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            app_id: this.app_id,
+                            item_id: this.item_id,
+                            field_id: this.field_id,
+                            messenger: messenger,
+                            user_id: this.messengers[index].messenger_user_id,
+                            photo_field_id: this.messengers[index].photo_field_id,
+                            token: this.messengers[index].token
+                        })
+                    });
+
+                    const userJson = await userResponse.json();
+
+                    conversation.users.push({
+                        fullname: `${userJson.first_name} ${userJson.last_name ? userJson.last_name : ''}`,
+                        avatar_512: userJson.photo,
+                        user_id: this.messengers[index].messenger_user_id
+                    });
+
+                } else {
+
+                    conversation.users.push({
+                        fullname: `${json.user.first_name} ${json.user.last_name ? json.user.last_name : ''}`,
+                        avatar_512: json.user.photo,
+                        user_id: this.messengers[index].messenger_user_id
+                    });
+
+                }
+                
+                const messages = json.messages.map((message) => {
+                    message.messenger = messenger;
+                    const findedPage = this.model.data_model.messengers.find(messenger => messenger.messenger_settings.page_id === message.page_id);
+                    message.page_name = findedPage?.messenger_settings?.page_name;
+                    if(message.type === 'attachment') {
+                        message.type = this.getFileType({ name: message.content });
+                    }
+                    return message;
+                });
+
+                conversation.messages.push(...messages);
+            } catch(err) {
+                continue;
+            }
+        }
+
+        conversation.messages.sort((a, b) => {
+            return a.timestamp - b.timestamp;
+        });
+        
+        conversation.messages = conversation.messages.filter((message, index, array) => array.findIndex(element=>(element.timestamp === message.timestamp)) === index);
+
+        return conversation;
+    }
+
+    getFileType(file) {
+        const fileExtension = file.name.split('.').pop();
+
+        if(['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
+            return 'image';
+        }
+
+        if(['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv'].includes(fileExtension)) {
+            return 'video';
+        }
+
+        if(['mp3', 'wav', 'ogg', 'flac', 'aac'].includes(fileExtension)) {
+            return 'audio';
+        }
+
+        return 'file';
+    }
+
+    addMessageToConversation(message) {
+        const newMessageTemplate = /*html*/`
+        ${
+            new Date(message.timestamp).getDate() !== new Date(this.conversation.messages[this.conversation.messages.indexOf(message) - 1]?.timestamp).getDate() ? `
+                <div class="date"><span>${new Date(message.timestamp).toLocaleDateString("en-US", {
+                    weekday: "long",
+                    month: "long",
+                    day: "numeric",
+                    })}</span></div>
+            ` : ''
+        }
+        <div class="message ${this.activeUserId == message.user_id ? 'me' : ''}">
+            <div class="user">
+                <div class="messenger">
+                    ${
+                        message.messenger === 'telegram' ? '<img src="https://gudhub.com/modules/conversation/public/images/telegram.svg" alt="Telegram" />' : ''
+                    }
+                    ${
+                        message.messenger === 'viber' ? '<img src="https://gudhub.com/modules/conversation/public/images/viber.svg" alt="Viber" />' : ''
+                    }
+                    ${
+                        message.messenger === 'facebook' ? '<img src="https://gudhub.com/modules/conversation/public/images/facebook.svg" alt="Facebook" />' : ''
+                    }
+                </div>
+                <conversation-avatar app-id="${this.appId}" name="${this.conversation.users.find(user => user.user_id == message.user_id)?.fullname}" url="${this.conversation.users.find(user => user.user_id == message.user_id)?.avatar_512}"></conversation-avatar>
+            </div>
+            <div class="content">
+                <div class="header">
+                    <span class="name">${this.conversation.users.find(user => user.user_id == message.user_id)?.fullname || 'Not Found'}</span>
+                    <span class="time">
+                        ${new Date(message.timestamp).toLocaleTimeString(navigator.language, {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                            })}
+                    </span>
+                    <span class="page">${message.page_name}</span>
+                </div>
+                <p class="message">
+                    ${ !message.type ? message.content : '' }
+                    ${ message.type === 'image' ? `<img src="${message.content}" alt="">` : ''}
+                    ${ message.type === 'video' ? `<video src="${message.content}" controls></video>` : ''}
+                    ${ message.type === 'audio' ? `<audio src="${message.content}" controls></audio>` : ''}
+                    ${ message.type === 'file' ? `<a href="${message.content}" download>Download file</a>` : ''}
+                </p>
+            </div>
+        </div>`;
+
+        const chat = document.querySelector('.chat');
+        chat.insertAdjacentHTML("beforeend", newMessageTemplate);
+    }
+
+    disconnectedCallback() {
+        gudhub.destroy('conversations_message_received', { app_id: this.app_id, field_id: this.field_id });
+    }
+}
+
+if(!customElements.get('gh-chat')){
+    customElements.define('gh-chat', GhChat);
+}
