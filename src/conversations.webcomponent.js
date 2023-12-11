@@ -29,6 +29,19 @@ import './style.scss';
         }
 
         super.render(html);
+        
+        // Get conversation from another component with dispatch event
+        this.addEventListener("chat_init", function(event) {
+            const { conversation } = event.detail;
+
+            const options = this.querySelectorAll(`.messenger-select option`);
+            for(let i = 0; i < options.length; i++) {
+                const option = options[i];
+                if(option.dataset.id == conversation.messages[conversation.messages.length - 1]?.page_id) {
+                    option.setAttribute('selected', '');
+                }
+            }
+        });
     }
 
     async sendMessage(element) {

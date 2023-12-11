@@ -41,6 +41,11 @@ class GhChat extends GhHtmlElement {
         this.addSubscriberToNewMessage();
 
         this.scrollChatToBottom();
+
+        this.dispatchEvent(new CustomEvent("chat_init", {
+            bubbles: true,
+            detail: { conversation: this.conversation }
+        }));
     }
 
     async addUserToConversation(){

@@ -13,7 +13,7 @@
                     ${
                         model.data_model.messengers.reduce((html, messenger) => {
                             return html + `
-                                <option value="${messenger.messenger_name}"><span>${messenger.messenger_name}</span> - ${messenger.messenger_settings.page_name}</option>
+                                <option data-id="${messenger.messenger_settings.page_id}" value="${messenger.messenger_name}"><span>${messenger.messenger_name}</span> - ${messenger.messenger_settings.page_name}</option>
                             `;
                         }, '')
                     }
