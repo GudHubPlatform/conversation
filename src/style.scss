@@ -10,6 +10,7 @@ gh-conversations {
     gh-chat {
         height: 100%;
         max-height: 78%;
+        position: relative;
     }
 
     .multi-chat {
@@ -17,6 +18,40 @@ gh-conversations {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+
+        .loader {
+            position: absolute;
+            top: 10px;
+            right: 75px;
+            display: none;
+            width: auto;
+
+            &:before {
+                padding-top: 0;
+            }
+
+            span {
+                width : 35px;
+                height: 35px;
+                border: 5px solid;
+                border-color: #0d99ff transparent;
+                border-radius: 50%;
+                display: inline-block;
+                animation: rotation 1s linear infinite;
+            }
+
+            &.chat_loader {
+                display: block;
+                right: auto;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                span {
+                    width: 50px;
+                    height: 50px;
+                }
+            }
+        }
 
         .chat {
             margin-bottom: 10px;
@@ -200,22 +235,6 @@ gh-conversations {
                         ::first-letter {
                             text-transform: uppercase;
                         }
-                    }
-                }
-                
-                .chat_loader {
-                    position: absolute;
-                    top: 10px;
-                    right: 75px;
-                    display: none;
-                    span {
-                        width : 35px;
-                        height: 35px;
-                        border: 5px solid;
-                        border-color: #0d99ff transparent;
-                        border-radius: 50%;
-                        display: inline-block;
-                        animation: rotation 1s linear infinite;
                     }
                 }
             }

@@ -34,7 +34,7 @@ import './style.scss';
     async sendMessage(element) {
         event.preventDefault();
 
-        const loader = this.querySelector('.chat_loader');
+        const loader = this.querySelector('.send_message_loader');
         const textarea = element.querySelector('textarea');
         const button = element.querySelector('button');
         const text = textarea.value;

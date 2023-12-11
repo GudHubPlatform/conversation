@@ -1,4 +1,4 @@
-gudhub.ghconstructor.angular
+angular
   .module("webhookSetter", [])
 
   .directive("webhookSetter", [
@@ -15,7 +15,6 @@ gudhub.ghconstructor.angular
         controller: [
           "$scope",
           function ($scope) {
-            console.log('WORK!!!')
             $scope.isWebhookSet = false;
             
             $scope.showDialog = () => {
@@ -96,7 +95,6 @@ gudhub.ghconstructor.angular
         ],
         template:
           /*html*/`
-          <span>TEST</span>
           <div class="btn_webhook gh-btn gh-btn-blue gh-btn-bg" ng-if="!ngModel.webhookSetted" ng-click="showDialog()"> Set Webhook </div>
           <div ng-if="ngModel.webhookSetted" class="success_message"> Webhook was setted successfully!</div>
           `,

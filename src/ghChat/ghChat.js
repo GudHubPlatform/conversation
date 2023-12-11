@@ -9,6 +9,13 @@ class GhChat extends GhHtmlElement {
 
     async onInit() {
 
+        const loaderHtml =
+        `<div class="chat_loader loader">
+            <span></span>
+        </div>`;
+
+        super.render(loaderHtml);
+
         this.getAttributes();
 
         this.activeUserId = gudhub.storage.user.user_id;
@@ -18,15 +25,16 @@ class GhChat extends GhHtmlElement {
 
         if(!this.model.data_model.messengers) return;
 
-        console.log('ONE INIT?')
-
         this.conversation = await this.getConversations();
 
         console.log(this.conversation)
 
         if(this.conversation.messages) {
-            this.addUserToConversation();
+            await this.addUserToConversation();
         }
+
+        const loader = this.querySelector('.chat_loader');
+        loader.style.display = 'none';
 
         super.render(html);
 
@@ -38,7 +46,6 @@ class GhChat extends GhHtmlElement {
     async addUserToConversation(){
 
         const idsFromMessengers = Object.keys(this.messengers).reduce((acc, messenger) => {
-            console.log(acc)
             if(!acc.includes(this.messengers[messenger].messenger_user_id)) {
                 acc.push(this.messengers[messenger].messenger_user_id);
             }
@@ -46,16 +53,12 @@ class GhChat extends GhHtmlElement {
             return acc;
         }, []);
 
-        console.log(idsFromMessengers)
-
         const conversationGudHubUsersIds = this.conversation.messages.reduce((acc, message) => {
             if(!idsFromMessengers.includes(message.user_id) && !acc.includes(message.user_id)) {
                 acc.push(message.user_id);
             }
             return acc;
         }, []);
-
-        console.log(conversationGudHubUsersIds)
 
         const gudhubUsers = await Promise.all(conversationGudHubUsersIds.map(async (user_id) => {
             const user = await gudhub.getUserById(user_id);
@@ -88,7 +91,7 @@ class GhChat extends GhHtmlElement {
                     this.conversation.messages.push(message);
                 }
 
-                this.addUserToConversation();
+                await this.addUserToConversation();
 
                 const findedPage = model.data_model.messengers.find(m => m.messenger_settings.page_id === response.data.page_id);
                 message.page_name = findedPage.messenger_settings.page_name;
@@ -111,7 +114,6 @@ class GhChat extends GhHtmlElement {
     }
 
     async getConversations() {
-        console.log('getCONV?')
         const conversation = {
             app_id: this.app_id,
             field_id: this.field_id,
