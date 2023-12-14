@@ -134,7 +134,14 @@ class GhChat extends GhHtmlElement {
             }
 
             const messenger = this.model.data_model.messengers[index].messenger_name;
-            const response = await fetch(`${gudhub.config.node_server_url}/conversation/get-conversation?app_id=${this.app_id}&field_id=${this.field_id}&user_id=${encodeURIComponent(this.messengers[index].messenger_user_id)}&messenger=${messenger}`);
+            let response;
+
+            if(!this.model.data_model.use_messenger_id) {
+                response = await fetch(`${gudhub.config.node_server_url}/conversation/get-conversation?app_id=${this.app_id}&field_id=${this.field_id}&user_id=${encodeURIComponent(this.messengers[index].messenger_user_id)}&messenger=${messenger}`);
+            } else {
+                response = await fetch(`${gudhub.config.node_server_url}/conversation/get-conversation?user_id=${encodeURIComponent(this.messengers[index].messenger_user_id)}&messenger=${messenger}`);
+            }
+
             try {
                 const json = await response.json();
                 if(!json) {
