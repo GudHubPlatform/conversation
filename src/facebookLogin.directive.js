@@ -24,37 +24,44 @@ angular
 
         controller: [
           "$scope",
-          function ($scope) {
+          async function ($scope) {
+            const initFacebook = async () => {
+              
+                (function(d, s, id){
+                  var js, fjs = d.getElementsByTagName(s)[0];
+                  if (d.getElementById(id)) {return;}
+                  js = d.createElement(s); js.id = id;
+                  js.src = "https://connect.facebook.net/en_US/sdk.js";
+                  fjs.parentNode.insertBefore(js, fjs);
+                  }(document, 'script', 'facebook-jssdk')
+                );
+              
+            }
 
-              // Facebook init login button
-              (function(d, s, id){
-                var js, fjs = d.getElementsByTagName(s)[0];
-                if (d.getElementById(id)) {return;}
-                js = d.createElement(s); js.id = id;
-                js.src = "https://connect.facebook.net/en_US/sdk.js";
-                fjs.parentNode.insertBefore(js, fjs);
-                }(document, 'script', 'facebook-jssdk')
-              );
-            
+            await initFacebook();
+          
+            window.fbAsyncInit = function() {
+              FB.init({
+                  appId: '1352981355593349',
+                  xfbml: true,
+                  version: 'v18.0'
+              });
 
-              window.fbAsyncInit = function() {
-                FB.init({
-                    appId: '1352981355593349',
-                    xfbml: true,
-                    version: 'v18.0'
-                });
+              FB.getLoginStatus(function(response) {
+                  $scope.toggleButtons(response)
+              });
 
+              window.checkLoginState = () => {
                 FB.getLoginStatus(function(response) {
-                    $scope.toggleButtons(response)
+                  $scope.loginStatusChangeCallback(response);
                 });
-
-                window.checkLoginState = () => {
-                  FB.getLoginStatus(function(response) {
-                    $scope.loginStatusChangeCallback(response);
-                  });
-                }
               }
-            
+            }
+
+            // Fix rendering of button after first render
+            setTimeout(()=> {
+              window.fbAsyncInit();
+            }, 500)
 
             $scope.loginStatusChangeCallback = function(response) {  // Called with the results from FB.getLoginStatus().
               if (response.status === 'connected') {   // Logged into your webpage and Facebook.
