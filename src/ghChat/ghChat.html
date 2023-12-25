@@ -1,6 +1,6 @@
 <div class="chat">
     ${
-        conversation.messages ?
+        conversation.messages.length ?
         conversation.messages.reduce((html, message) => {
             return html + `
                 ${
@@ -48,6 +48,6 @@
                     </div>
                 </div>
             `
-        }, '') : ''
+        }, '') : '<div class="date"><span>No Messages Found</span></div>'
     }
 </div>

@@ -84,9 +84,6 @@ export default class GhConversationsData {
                       return {
                         field_name: 'Use only messenger user id',
                         name_space: 'use_messenger_id',
-                        tooltip: {
-                          en: 'Use only messenger id when get conversation ( avoid app id and field id )'
-                        },
                         data_type: 'boolean'
                       };
                     }
