@@ -147,6 +147,10 @@ class GhChat extends GhHtmlElement {
                 if(!json) {
                     continue;
                 }
+
+                const userName = await gudhub.getFieldValue(this.app_id, this.item_id, this.model.data_model.user_name_field_id);
+                const userPhoto = await gudhub.getInterpretationById(this.app_id, this.item_id, this.messengers[index].photo_field_id, "value");
+
                 if(!json.user) {
                     const userResponse = await fetch(`${gudhub.config.node_server_url}/conversation/update-messenger-user`, {
                         method: 'POST',
@@ -164,19 +168,17 @@ class GhChat extends GhHtmlElement {
                         })
                     });
 
-                    const userJson = await userResponse.json();
-
                     conversation.users.push({
-                        fullname: `${userJson.first_name} ${userJson.last_name ? userJson.last_name : ''}`,
-                        avatar_512: userJson.photo,
+                        fullname: userName ? userName : 'User',
+                        avatar_512: userPhoto,
                         user_id: this.messengers[index].messenger_user_id
                     });
 
                 } else {
 
                     conversation.users.push({
-                        fullname: `${json.user.first_name} ${json.user.last_name ? json.user.last_name : ''}`,
-                        avatar_512: json.user.photo,
+                        fullname: userName ? userName : 'User',
+                        avatar_512: userPhoto,
                         user_id: this.messengers[index].messenger_user_id
                     });
 
