@@ -120,6 +120,21 @@ export default class GhConversationsData {
                               display: true
                             },
                             {
+                              property: 'page_name',
+                              type: 'text',
+                              prop_name: 'Page Name',
+                              data_model: function(option){
+                                let findedOption = fieldModel.data_model.messengers.find(messenger => messenger == option);
+
+                                if(findedOption) {
+                                  findedOption.page_name = findedOption.messenger_settings.page_name;
+                                }
+
+                                return {}
+                              },
+                              display: true
+                            },
+                            {
                                 property: "messenger_settings",
                                 prop_name: "Settings",
                                 type: "additional_settings",

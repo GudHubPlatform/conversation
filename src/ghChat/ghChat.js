@@ -1,5 +1,6 @@
 import GhHtmlElement from '@gudhub/gh-html-element';
 import html from './ghChat.html';
+import resizeObserver from './resizeObserver.js';
 
 class GhChat extends GhHtmlElement {
 
@@ -40,12 +41,18 @@ class GhChat extends GhHtmlElement {
 
         this.addSubscriberToNewMessage();
 
-        this.scrollChatToBottom();
 
         this.dispatchEvent(new CustomEvent("chat_init", {
             bubbles: true,
             detail: { conversation: this.conversation }
         }));
+
+        resizeObserver.subscribe('gh-chat');
+
+        // Hard fix - used for render all images and scroll down of chat
+        setTimeout(() => {
+            this.scrollChatToBottom();
+        }, 1000)
     }
 
     async addUserToConversation(){
@@ -115,7 +122,7 @@ class GhChat extends GhHtmlElement {
     }
 
     scrollChatToBottom() {
-        this.querySelector('.chat').scrollTop = this.querySelector('.chat').scrollHeight;
+        this.scrollTop = this.scrollHeight;
     }
 
     async getConversations() {
@@ -280,6 +287,7 @@ class GhChat extends GhHtmlElement {
 
     disconnectedCallback() {
         gudhub.destroy('conversations_message_received', { app_id: this.app_id, field_id: this.field_id });
+        resizeObserver.destroy();
     }
 }
 
