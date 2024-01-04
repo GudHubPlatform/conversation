@@ -11,7 +11,10 @@ export default merge(common, {
         headers: {
             'Access-Control-Allow-Origin': '*'
         },
+        client: {
+            overlay: false
+        },
         hot: false,
-        liveReload: false
+        liveReload: true
     }
 })

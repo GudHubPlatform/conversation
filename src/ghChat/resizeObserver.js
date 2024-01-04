@@ -6,14 +6,14 @@ function setHeight(element) {
     element.style.minHeight = maxHeight - 210 + 'px';
 }
 
-function onWindowResize (selector) {
-    const elementsToSetHeight = document.querySelector(selector);
+function onWindowResize () {
+    const elementsToSetHeight = document.querySelector('gh-chat');
     setHeight(elementsToSetHeight);
 };
 
 const resizeObserver = {
-    subscribe(selector) {
-        onWindowResize(selector);
+    subscribe() {
+        onWindowResize();
         window.addEventListener('resize', onWindowResize);
     },
     destroy() {

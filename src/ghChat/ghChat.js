@@ -47,7 +47,7 @@ class GhChat extends GhHtmlElement {
             detail: { conversation: this.conversation }
         }));
 
-        resizeObserver.subscribe('gh-chat');
+        resizeObserver.subscribe();
 
         // Hard fix - used for render all images and scroll down of chat
         setTimeout(() => {

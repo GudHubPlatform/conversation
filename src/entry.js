@@ -3,6 +3,7 @@ import './ghChat/ghChat.js';
 import './conversations.webcomponent.js';
 import './webhookSetter.directive.js';
 import './facebookLogin.directive.js';
+import './unread_messages.webcomponent.js'
 
 export default class GhConversationsData {
 
@@ -50,7 +51,7 @@ export default class GhConversationsData {
         }, {
             id: 'value',
             name: 'Value',
-            content: () => value
+            content: () => `<unread-messages-count app-id="{{appId}}" item-id="{{itemId}}" field-id="{{fieldId}}" value="{{value}}"></unread-messages-count>`
         }];
     }
 

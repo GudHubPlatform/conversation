@@ -16,7 +16,7 @@ gh-conversations {
         height: 100%;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        // justify-content: space-between;
 
         .loader {
             position: absolute;
@@ -278,6 +278,51 @@ gh-conversations {
                     color: #fff;
                 }
             }
+        }
+    }
+}
+
+unread-messages-count {
+    .chat_messages {
+        position: relative;
+        background: red;
+        border-radius: 15px;
+        padding: 2px 6px;
+        min-width: 19px;
+        max-width: 19px;
+        min-height: 19px;
+        cursor: pointer;
+
+        .unread_count {
+            font-size: 12px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        &.read_all {
+            background: #ccc;
+        }
+    }
+
+    .status_messages {
+        display: none;
+        position: absolute;
+        top: 20px;
+        right: 5px;
+        border-radius: 5px;
+        padding: 5px;
+        box-shadow: 0 0 8px 0 rgba(78, 78, 78, 0.31);
+        background: #fff;
+        z-index: 1;
+
+        span {
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        &.show {
+            display: block;
         }
     }
 }

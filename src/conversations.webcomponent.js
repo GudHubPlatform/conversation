@@ -16,7 +16,12 @@ import './style.scss';
 
         this.messengers = {};
 
-        if(!this.model.data_model.messengers) return;
+        if(!this.model || !this.model.data_model.messengers) {
+            const iconsStorage = gudhub.ghconstructor.angularInjector.get('iconsStorage');
+            const svg = iconsStorage.getIcon("speech_bubble", "a0a7ad", "40px");
+            super.render(svg);
+            return;
+        }
 
         for(const index of Object.keys(this.model.data_model.messengers)) {
             const messenger = this.model.data_model.messengers[index];
@@ -118,6 +123,8 @@ import './style.scss';
             button.removeAttribute('disabled');
             textarea.value = '';
         }
+
+        this.value = 0;
 
     }
 
