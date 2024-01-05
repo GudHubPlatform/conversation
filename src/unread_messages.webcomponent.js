@@ -64,6 +64,7 @@ class UnreadMessages extends GhHtmlElement {
             action.textContent = "Mark as Unread";
         } else {
             if(this.value > 0) {
+                chatMessages.classList.remove('read_all');
                 countEl.innerHTML = this.value;
             }
         }
