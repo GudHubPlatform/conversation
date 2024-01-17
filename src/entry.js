@@ -1,9 +1,10 @@
-import './conversationAvatar/conversationAvatar.js';
-import './ghChat/ghChat.js';
+import './components/conversationAvatar/conversationAvatar.js';
+import './components/ghChat/ghChat.js';
 import './conversations.webcomponent.js';
-import './webhookSetter.directive.js';
-import './facebookLogin.directive.js';
-import './unread_messages.webcomponent.js'
+import './components/webhookSetter.directive.js';
+import './components/facebookLogin.directive.js';
+import './components/unread_messages.webcomponent.js'
+import './components/slack.oauth.js';
 
 export default class GhConversationsData {
 
@@ -114,6 +115,10 @@ export default class GhConversationsData {
                                         {
                                             name: 'Facebook',
                                             value: 'facebook'
+                                        },
+                                        {
+                                            name: 'Slack',
+                                            value: 'slack'
                                         }
                                     ]
                                 };
@@ -356,7 +361,84 @@ export default class GhConversationsData {
                                     ],
                                   };
                                 },
-                              }]
+                              },{
+                                property: "messenger_settings",
+                                prop_name: "Settings",
+                                type: "additional_settings",
+                                display: false,
+                                data_model: function (option, scope) {
+                                    this.display = option.messenger_name === 'slack';
+                                  return {
+                                    appId: fieldModel.app_id,
+                                    elementId: fieldModel.field_id,
+                                    settings: [
+                                      {
+                                        title: "Messenger",
+                                        type: "general_setting",
+                                        icon: "configuration",
+                                        columns_list: [
+                                          [
+                                            {
+                                              title: "Page Settings",
+                                              type: "header",
+                                            },
+                                            {
+                                              type: 'html',
+                                              data_model: function (fieldModel) {
+                                                return {};
+                                              },
+                                              control:
+                                                `<slack-oauth-button app-id="{{appId}}" field-id="{{elementId}}"></slack-oauth-button>`
+                                            },
+                                            {
+                                              showIf: "photo_field === 1",
+                                              type: "ghElement",
+                                              property: "messenger",
+                                              data_model: function () {
+                                                  return {
+                                                      data_type: "text",
+                                                      field_name: "Messenger",
+                                                      name_space: "messenger",
+                                                      field_value: "slack"
+                                                  };
+                                              },
+                                            },
+                                            {
+                                              type: 'ghElement',
+                                              property: 'user_id_field',
+                                              data_model: (field) => {
+                                                  return {
+                                                      data_type: 'field',
+                                                      field_name: 'Slack user id field',
+                                                      name_space: 'slack_user_id_field',
+                                                      data_model: {
+                                                          app_id: fieldModel.app_id
+                                                      }
+                                                  }
+                                              }
+                                            },
+                                            {
+                                              type: 'ghElement',
+                                              property: 'photo_field',
+                                              data_model: (field) => {
+                                                  return {
+                                                      data_type: 'field',
+                                                      field_name: 'Slack photo field',
+                                                      name_space: 'slack_photo_field',
+                                                      data_model: {
+                                                          app_id: fieldModel.app_id
+                                                      }
+                                                  }
+                                              }
+                                            },
+        
+                                          ],
+                                        ],
+                                      },
+                                    ],
+                                  };
+                                },
+                              },]
                           };
                         },
                         control:
