@@ -1,5 +1,5 @@
 import GhHtmlElement from "@gudhub/gh-html-element";
-import html from "./chat.html";
+import html from "./send-message.html";
 import './style.scss';
  class GhConversations extends GhHtmlElement {
 
