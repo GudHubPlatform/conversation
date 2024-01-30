@@ -24,11 +24,16 @@ class GhChat extends GhHtmlElement {
 
         this.messengers = document.querySelector('gh-conversations').messengers;
 
+        this.userImagesFields = [];
+        for(let i in this.messengers) {
+            if(!this.userImagesFields.find(fieldId => fieldId === this.messengers[i].photo_field_id)) {
+                this.userImagesFields.push(this.messengers[i].photo_field_id);
+            }
+        }
+
         if(!this.model.data_model.messengers) return;
 
         this.conversation = await this.getConversations();
-
-        console.log(this.conversation)
 
         if(this.conversation.messages) {
             await this.addUserToConversation();
@@ -40,7 +45,6 @@ class GhChat extends GhHtmlElement {
         super.render(html);
 
         this.addSubscriberToNewMessage();
-
 
         this.dispatchEvent(new CustomEvent("chat_init", {
             bubbles: true,
@@ -135,7 +139,6 @@ class GhChat extends GhHtmlElement {
         }
 
         for(const index of Object.keys(this.messengers)) {
-            
             if(!this.messengers[index].messenger_user_id) {
                 continue;
             }
@@ -227,7 +230,7 @@ class GhChat extends GhHtmlElement {
             return 'video';
         }
 
-        if(['mp3', 'wav', 'ogg', 'flac', 'aac'].includes(fileExtension)) {
+        if(['mp3', 'wav', 'ogg', 'flac', 'aac', 'webm'].includes(fileExtension)) {
             return 'audio';
         }
 
@@ -258,11 +261,11 @@ class GhChat extends GhHtmlElement {
                         message.messenger === 'facebook' ? '<img src="https://gudhub.com/modules/conversation/public/images/facebook.svg" alt="Facebook" />' : ''
                     }
                 </div>
-                <conversation-avatar app-id="${this.appId}" name="${this.conversation.users.find(user => user.user_id == message.user_id)?.fullname}" url="${this.conversation.users.find(user => user.user_id == message.user_id)?.avatar_512}"></conversation-avatar>
+                <gh-avatar-webcomponent app-id="${this.appId}" item-id="${this.itemId}" images-fields-id="${this.userImagesFields}" name="${message.user_name || this.conversation.users.find(user => user.user_id == message.user_id)?.fullname}" url="${message.photo_url || this.conversation.users.find(user => user.user_id == message.user_id)?.avatar_512}"></gh-avatar-webcomponent>
             </div>
             <div class="content">
                 <div class="header">
-                    <span class="name">${this.conversation.users.find(user => user.user_id == message.user_id)?.fullname || 'Not Found'}</span>
+                    <span class="name">${message.user_name || this.conversation.users.find(user => user.user_id == message.user_id)?.fullname || 'Not Found'}</span>
                     <span class="time">
                         ${new Date(message.timestamp).toLocaleTimeString(navigator.language, {
                                 hour: "2-digit",

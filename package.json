@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@gudhub/gh-html-element": "^1.4.4"
+    "@gudhub/gh-html-element": "^1.4.5"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^4.0.0",

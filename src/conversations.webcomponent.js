@@ -1,4 +1,5 @@
 import GhHtmlElement from "@gudhub/gh-html-element";
+import './components/createConversation.webcomponent.js';
 import html from "./send-message.html";
 import './style.scss';
  class GhConversations extends GhHtmlElement {
@@ -29,7 +30,8 @@ import './style.scss';
             this.messengers[index] = {
                 token: messenger.messenger_settings.bot_token,
                 messenger_user_id: await gudhub.getFieldValue(this.app_id, this.item_id, this.model.data_model.messengers[index].messenger_settings.user_id_field),
-                photo_field_id: this.model.data_model.messengers[index].messenger_settings.photo_field
+                photo_field_id: this.model.data_model.messengers[index].messenger_settings.photo_field,
+                messenger: messenger.messenger_name
             }
         }
 
@@ -39,14 +41,61 @@ import './style.scss';
         this.addEventListener("chat_init", function(event) {
             const { conversation } = event.detail;
 
+            const selectedOption = this.querySelector('.messenger-select');
+
+            let messenger_id = true;
+
+            for(const index in this.messengers) {
+                messenger_id = this.messengers[index].messenger_user_id;
+            }
+
+            selectedOption.addEventListener('change', async (event) => {
+
+                const createGroupBtn = this.querySelector('slack-create-conversation');
+                const sendBtn = this.querySelector('.send_button');
+
+                if(event.target.value === 'slack' && !conversation.messages.length && !messenger_id) {
+                    createGroupBtn.style.display = 'block';
+                    sendBtn.style.display = 'none';
+                } else {
+                    sendBtn.style.display = 'block';
+                    createGroupBtn.style.display = 'none';
+                }
+            });
+
             const options = this.querySelectorAll(`.messenger-select option`);
             for(let i = 0; i < options.length; i++) {
                 const option = options[i];
                 if(option.dataset.id == conversation.messages[conversation.messages.length - 1]?.page_id) {
                     option.setAttribute('selected', '');
+
+                    if(option.value == 'slack' && !conversation.messages.length && !messenger_id) {
+                        const createGroupBtn = this.querySelector('slack-create-conversation');
+                        const sendBtn = this.querySelector('.send_button');
+                        createGroupBtn.style.display = 'block';
+                        sendBtn.style.display = 'none';
+                    }
                 }
             }
         });
+    }
+
+    getFileType(file) {
+        const fileExtension = file.name.split('.').pop();
+
+        if(['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
+            return 'image';
+        }
+
+        if(['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv'].includes(fileExtension)) {
+            return 'video';
+        }
+
+        if(['mp3', 'wav', 'ogg', 'flac', 'aac', 'webm'].includes(fileExtension)) {
+            return 'audio';
+        }
+
+        return 'file';
     }
 
     async sendMessage(element) {

@@ -8,6 +8,7 @@ gh-conversations {
     padding: 15px;
 
     gh-chat {
+        min-height: 68vh;
         position: relative;
         overflow: auto;
     }
@@ -138,22 +139,24 @@ gh-conversations {
                         position: absolute;
                         bottom: -8px;
                         right: -6px;
+                        z-index: 1;
 
                         img {
                             z-index: 1;
                         }
                     }
-
-                    .avatar {
-                        width: 50px;
-                        height: 50px;
-                        border-radius: 50%;
-                        overflow: hidden;
-                        background: #fff;
-
-                        img {
-                            width: 100%;
-                            height: auto;
+                    
+                    gh-avatar-webcomponent {
+                        .gh-avatar {
+                            width: auto;
+                            .gh-avatar_wrapper {
+                                width: 50px;
+                                height: 50px;
+                                img {
+                                    width: 50px;
+                                    height: 50px;
+                                }
+                            }
                         }
                     }
 
@@ -188,20 +191,13 @@ gh-conversations {
                     
                     .message {
                         font-size: 15px;
+                        .download_file {
+                            display: flex;
+                            align-items: center;
+                            gap: 5px;
+                        }
                     }
                 }
-
-                // &.me {
-                //     justify-content: flex-end;
-                //     margin-right: 10px;
-                //     margin-left: auto;
-                //     flex-direction: row-reverse;
-
-                //     .user {
-                //         margin-left: 10px;
-                //         margin-right: 0;
-                //     }
-                // }
             }
         }
         
@@ -372,11 +368,15 @@ unread-messages-count {
             font-size: 14px;
             text-align: left;
             margin-top: 5px;
+            .bold {
+                font-weight: 500;
+            }
         }
     }
 }
 
 .webhook_set_dialog {
+    position: relative;
     .content {
         padding: 40px;
     }
@@ -389,6 +389,38 @@ unread-messages-count {
         
         .field_wrapper {
             display: flex;
+        }
+    }
+    .loader {
+        position: absolute;
+        right: 65px;
+        bottom: 35px;
+        width: auto;
+
+        &:before {
+            padding-top: 0;
+        }
+
+        span {
+            width : 35px;
+            height: 35px;
+            border: 5px solid;
+            border-color: #0d99ff transparent;
+            border-radius: 50%;
+            display: inline-block;
+            animation: rotation 1s linear infinite;
+        }
+
+        &.chat_loader {
+            display: block;
+            right: auto;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            span {
+                width: 50px;
+                height: 50px;
+            }
         }
     }
 }
@@ -413,6 +445,23 @@ slack-oauth-button {
         border-radius: 4px;
         svg {
             margin-right: 12px;
+        }
+    }
+}
+
+slack-create-conversation {
+    display: none;
+    .create_conversation-button {
+        font-size: 14px;
+        font-weight: 400;
+        outline: none;
+        border: 1px solid transparent;
+        &:hover {
+            background-color: transparent;
+            border-color: #0D99FF;
+        }
+        svg {
+            margin-right: 5px;
         }
     }
 }

@@ -1,9 +1,8 @@
-import './components/conversationAvatar/conversationAvatar.js';
 import './components/ghChat/ghChat.js';
 import './conversations.webcomponent.js';
 import './components/webhookSetter.directive.js';
 import './components/facebookLogin.directive.js';
-import './components/unread_messages.webcomponent.js'
+import './components/unreadMessages.webcomponent.js'
 import './components/slack.oauth.js';
 
 export default class GhConversationsData {
