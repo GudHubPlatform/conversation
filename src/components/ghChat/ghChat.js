@@ -112,9 +112,6 @@ class GhChat extends GhHtmlElement {
                 const findedPage = model.data_model.messengers.find(m => m.messenger_settings.page_id === response.data.page_id);
                 message.page_name = findedPage.messenger_settings.page_name;
 
-                const noMessage = this.querySelector('.no_messages');
-                noMessage.style.display = 'none';
-
                 this.addMessageToConversation(message);
 
                 this.scrollChatToBottom();
