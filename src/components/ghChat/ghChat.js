@@ -95,7 +95,7 @@ class GhChat extends GhHtmlElement {
     addSubscriberToNewMessage() {
         gudhub.on('conversations_message_received', { app_id: this.app_id, field_id: this.field_id }, async (_event, response) => {
             const model = await gudhub.getField(this.app_id, this.field_id);
-            if(this.app_id == response.data.app_id && this.field_id == response.data.field_id && this.conversation.users.find((user) => user.user_id == response.data.messenger_user_id)) {
+            if(this.app_id == response.data.app_id && this.field_id == response.data.field_id) {
                 const message = response.data.message;
                 message.messenger = response.data.messenger;
                 if(message.type === 'attachment') {
@@ -259,6 +259,9 @@ class GhChat extends GhHtmlElement {
                     }
                     ${
                         message.messenger === 'facebook' ? '<img src="https://gudhub.com/modules/conversation/public/images/facebook.svg" alt="Facebook" />' : ''
+                    }
+                    ${
+                        message.messenger === 'slack' ? '<img src="https://gudhub.com/modules/conversation/public/images/slack.svg" alt="Slack" />' : ''
                     }
                 </div>
                 <gh-avatar-webcomponent app-id="${this.appId}" item-id="${this.itemId}" images-fields-id="${this.userImagesFields}" name="${message.user_name || this.conversation.users.find(user => user.user_id == message.user_id)?.fullname}" url="${message.photo_url || this.conversation.users.find(user => user.user_id == message.user_id)?.avatar_512}"></gh-avatar-webcomponent>
