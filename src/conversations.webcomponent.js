@@ -31,7 +31,11 @@ import './style.scss';
                 token: messenger.messenger_settings.bot_token,
                 messenger_user_id: await gudhub.getFieldValue(this.app_id, this.item_id, this.model.data_model.messengers[index].messenger_settings.user_id_field),
                 photo_field_id: this.model.data_model.messengers[index].messenger_settings.photo_field,
-                messenger: messenger.messenger_name
+                messenger: messenger.messenger_name,
+            }
+
+            if(messenger.messenger_settings.use_threads) {
+                this.messengers[index].message_id_for_threads = await gudhub.getFieldValue(this.appId, this.itemId, messenger.messenger_settings.thread_field_id);
             }
         }
 
@@ -75,6 +79,13 @@ import './style.scss';
                         createGroupBtn.style.display = 'block';
                         sendBtn.style.display = 'none';
                     }
+                }
+
+                if(options.length === 1 && option.value === 'slack' && option.dataset.id === 'undefined') {
+                    const createGroupBtn = this.querySelector('slack-create-conversation');
+                    const sendBtn = this.querySelector('.send_button');
+                    createGroupBtn.style.display = 'block';
+                    sendBtn.style.display = 'none';
                 }
             }
         });
@@ -137,6 +148,7 @@ import './style.scss';
                     app_id: this.app_id,
                     field_id: this.field_id,
                     user_id: this.activeUserId,
+                    message_id: this.messengers[messengerSelect.selectedIndex].message_id_for_threads,
                     page_id: this.model.data_model.messengers[messengerSelect.selectedIndex].messenger_settings.page_id,
                     attachment: {
                         url: gudhubFile.url,
@@ -163,6 +175,7 @@ import './style.scss';
                     app_id: this.app_id,
                     field_id: this.field_id,
                     user_id: this.activeUserId,
+                    message_id: this.messengers[messengerSelect.selectedIndex].message_id_for_threads,
                     page_id: this.model.data_model.messengers[messengerSelect.selectedIndex].messenger_settings.page_id,
                     text
                 })

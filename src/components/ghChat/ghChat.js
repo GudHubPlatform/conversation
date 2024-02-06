@@ -17,6 +17,8 @@ class GhChat extends GhHtmlElement {
 
         super.render(loaderHtml);
 
+        await gudhub.ghconstructor.getInstance('avatar');
+
         this.getAttributes();
 
         this.activeUserId = gudhub.storage.user.user_id;

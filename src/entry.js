@@ -430,6 +430,32 @@ export default class GhConversationsData {
                                                   }
                                               }
                                             },
+                                            {
+                                              type: 'ghElement',
+                                              property: 'use_threads',
+                                              data_model() {
+                                                return {
+                                                  field_name: 'Post in thread',
+                                                  name_space: 'threads_messages',
+                                                  data_type: 'boolean'
+                                                };
+                                              }
+                                            },
+                                            {
+                                              type: 'ghElement',
+                                              showIf: "use_threads === 1",
+                                              property: 'thread_field_id',
+                                              data_model: (field) => {
+                                                  return {
+                                                      data_type: 'field',
+                                                      field_name: 'Field id for thread',
+                                                      name_space: 'thread_id_field',
+                                                      data_model: {
+                                                          app_id: fieldModel.app_id
+                                                      }
+                                                  }
+                                              }
+                                            },
         
                                           ],
                                         ],
