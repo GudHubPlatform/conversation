@@ -41,7 +41,7 @@ import './style.scss';
 
         super.render(html);
         
-        // Get conversation from another component with dispatch event
+        // Get conversation from another component with dispatch event and check if conversation exist for show/hide create channel button in slack
         this.addEventListener("chat_init", function(event) {
             const { conversation } = event.detail;
 
@@ -81,7 +81,7 @@ import './style.scss';
                     }
                 }
 
-                if(options.length === 1 && option.value === 'slack' && option.dataset.id === 'undefined') {
+                if(options.length === 1 && option.value === 'slack' && !messenger_id) {
                     const createGroupBtn = this.querySelector('slack-create-conversation');
                     const sendBtn = this.querySelector('.send_button');
                     createGroupBtn.style.display = 'block';
