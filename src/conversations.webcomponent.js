@@ -81,7 +81,7 @@ import './style.scss';
                     }
                 }
 
-                if(options.length === 1 && option.value === 'slack' && !messenger_id) {
+                if(options.length === 1 && option.value === 'slack' && !messenger_id && !this.model.data_model.messengers[0].messenger_settings.use_threads) {
                     const createGroupBtn = this.querySelector('slack-create-conversation');
                     const sendBtn = this.querySelector('.send_button');
                     createGroupBtn.style.display = 'block';
