@@ -149,7 +149,11 @@ class GhChat extends GhHtmlElement {
             let response;
 
             if(!this.model.data_model.use_messenger_id) {
-                response = await fetch(`${gudhub.config.node_server_url}/conversation/get-conversation?app_id=${this.app_id}&field_id=${this.field_id}&user_id=${encodeURIComponent(this.messengers[index].messenger_user_id)}&messenger=${messenger}`);
+                if(this.model.data_model.messengers[index].messenger_settings.use_threads && this.model.data_model.messengers[index].messenger_name == 'slack') {
+                    response = await fetch(`${gudhub.config.node_server_url}/conversation/get-conversation?app_id=${this.app_id}&field_id=${this.field_id}&user_id=${encodeURIComponent(this.messengers[index].message_id_for_threads)}&messenger=${messenger}`);
+                } else {
+                    response = await fetch(`${gudhub.config.node_server_url}/conversation/get-conversation?app_id=${this.app_id}&field_id=${this.field_id}&user_id=${encodeURIComponent(this.messengers[index].messenger_user_id)}&messenger=${messenger}`);
+                }
             } else {
                 response = await fetch(`${gudhub.config.node_server_url}/conversation/get-conversation?user_id=${encodeURIComponent(this.messengers[index].messenger_user_id)}&messenger=${messenger}`);
             }
