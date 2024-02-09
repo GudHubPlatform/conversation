@@ -128,6 +128,10 @@ import './style.scss';
         loader.style.display = 'block';
         button.setAttribute('disabled', '');
 
+        const token = await gudhub.getToken();
+        const res = await fetch(`${gudhub.config.node_server_url}/integrations?token=${encodeURIComponent(token)}`);
+        const integrations = await res.json();
+        const slackIntegration = integrations.data.find(integration => integration.service_id === 'slack' && integration.field_id === this.fieldId);
 
         if(uploadInput.files.length > 0) {
 
@@ -147,9 +151,10 @@ import './style.scss';
                     token: this.messengers[messengerSelect.selectedIndex].token,
                     app_id: this.app_id,
                     field_id: this.field_id,
+                    item_id: this.item_id,
                     user_id: this.activeUserId,
                     message_id: this.messengers[messengerSelect.selectedIndex].message_id_for_threads,
-                    page_id: this.model.data_model.messengers[messengerSelect.selectedIndex].messenger_settings.page_id,
+                    page_id: this.model.data_model.messengers[messengerSelect.selectedIndex].messenger_settings.page_id || slackIntegration.service_user_id,
                     attachment: {
                         url: gudhubFile.url,
                         type: fileType
@@ -174,9 +179,10 @@ import './style.scss';
                     token: this.messengers[messengerSelect.selectedIndex].token,
                     app_id: this.app_id,
                     field_id: this.field_id,
+                    item_id: this.item_id,
                     user_id: this.activeUserId,
                     message_id: this.messengers[messengerSelect.selectedIndex].message_id_for_threads,
-                    page_id: this.model.data_model.messengers[messengerSelect.selectedIndex].messenger_settings.page_id,
+                    page_id: this.model.data_model.messengers[messengerSelect.selectedIndex].messenger_settings.page_id || slackIntegration.service_user_id,
                     text
                 })
             });
