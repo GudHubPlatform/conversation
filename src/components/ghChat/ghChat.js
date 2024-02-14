@@ -72,7 +72,7 @@ class GhChat extends GhHtmlElement {
         }, []);
 
         const conversationGudHubUsersIds = this.conversation.messages.reduce((acc, message) => {
-            if(!idsFromMessengers.includes(message.user_id) && !acc.includes(message.user_id)) {
+            if(!idsFromMessengers.includes(message.user_id) && !acc.includes(message.user_id) && Boolean(Number(message.user_id))) {
                 acc.push(message.user_id);
             }
             return acc;
@@ -97,7 +97,7 @@ class GhChat extends GhHtmlElement {
     addSubscriberToNewMessage() {
         gudhub.on('conversations_message_received', { app_id: this.app_id, field_id: this.field_id }, async (_event, response) => {
             const model = await gudhub.getField(this.app_id, this.field_id);
-            if(this.app_id == response.data.app_id && this.field_id == response.data.field_id) {
+            if(this.app_id == response.data.app_id && this.field_id == response.data.field_id, this.item_id == response.data.item_id) {
                 const message = response.data.message;
                 message.messenger = response.data.messenger;
                 if(message.type === 'attachment') {
@@ -113,6 +113,9 @@ class GhChat extends GhHtmlElement {
 
                 const findedPage = model.data_model.messengers.find(m => m.messenger_settings.page_id === response.data.page_id);
                 message.page_name = findedPage.messenger_settings.page_name;
+
+                const noMessages = document.querySelector('.no_messages');
+                if(noMessages) noMessages.style.display = 'none';
 
                 this.addMessageToConversation(message);
 

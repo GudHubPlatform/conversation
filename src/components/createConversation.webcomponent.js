@@ -115,7 +115,10 @@ class CreateConversation extends GhHtmlElement {
                             }
 
                             $scope.hide();
-
+                            const createGroupBtn = document.querySelector('slack-create-conversation');
+                            const sendBtn = document.querySelector('.send_button');
+                            createGroupBtn.style.display = 'none';
+                            sendBtn.style.display = 'block';
                         } else {
                             $scope.showErrorMessage = true;
                         }
