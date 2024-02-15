@@ -133,6 +133,16 @@ import './style.scss';
         const integrations = await res.json();
         const slackIntegration = integrations.data.find(integration => integration.service_id === 'slack' && integration.field_id === this.fieldId);
 
+        for(const index of Object.keys(this.model.data_model.messengers)) {
+            const messenger = this.model.data_model.messengers[index];
+            
+            this.messengers[index].messenger_user_id = await gudhub.getFieldValue(this.app_id, this.item_id, this.model.data_model.messengers[index].messenger_settings.user_id_field);
+
+            if(messenger.messenger_settings.use_threads) {
+                this.messengers[index].message_id_for_threads = await gudhub.getFieldValue(this.appId, this.itemId, messenger.messenger_settings.thread_field_id);
+            }
+        }
+
         if(uploadInput.files.length > 0) {
 
             const file = uploadInput.files[0];

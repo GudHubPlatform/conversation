@@ -28,7 +28,7 @@
                                 message.messenger === 'slack' ? '<img src="https://gudhub.com/modules/conversation/public/images/slack.svg" alt="Slack" />' : ''
                             }
                         </div>
-                        <gh-avatar-webcomponent app-id="${appId}" item-id="${itemId}" images-fields-id="${userImagesFields}" name="${message.user_name || conversation.users.find(user => user.user_id == message.user_id)?.fullname}" url="${message.photo_url || conversation.users.find(user => user.user_id == message.user_id)?.avatar_512}"></gh-avatar-webcomponent>
+                        <gh-avatar-webcomponent app-id="${appId}" item-id="${itemId}" name="${message.user_name || conversation.users.find(user => user.user_id == message.user_id)?.fullname}" url="${message.photo_url || conversation.users.find(user => user.user_id == message.user_id)?.avatar_512}"></gh-avatar-webcomponent>
                     </div>
                     <div class="content">
                         <div class="header">

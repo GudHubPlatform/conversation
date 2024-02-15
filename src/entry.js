@@ -408,22 +408,8 @@ export default class GhConversationsData {
                                               data_model: (field) => {
                                                   return {
                                                       data_type: 'field',
-                                                      field_name: 'Slack user id field',
-                                                      name_space: 'slack_user_id_field',
-                                                      data_model: {
-                                                          app_id: fieldModel.app_id
-                                                      }
-                                                  }
-                                              }
-                                            },
-                                            {
-                                              type: 'ghElement',
-                                              property: 'photo_field',
-                                              data_model: (field) => {
-                                                  return {
-                                                      data_type: 'field',
-                                                      field_name: 'Slack photo field',
-                                                      name_space: 'slack_photo_field',
+                                                      field_name: 'Slack group id field',
+                                                      name_space: 'slack_group_id_field',
                                                       data_model: {
                                                           app_id: fieldModel.app_id
                                                       }
