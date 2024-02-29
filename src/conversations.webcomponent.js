@@ -42,15 +42,16 @@ import './style.scss';
         super.render(html);
         
         // Get conversation from another component with dispatch event and check if conversation exist for show/hide create channel button in slack
-        this.addEventListener("chat_init", function(event) {
+        this.addEventListener("chat_init", async function(event) {
             const { conversation } = event.detail;
 
             const selectedOption = this.querySelector('.messenger-select');
 
-            let messenger_id = true;
+            let messenger_id = true, thread_id = false;
 
             for(const index in this.messengers) {
                 messenger_id = this.messengers[index].messenger_user_id;
+                thread_id = await gudhub.getFieldValue(this.app_id, this.item_id, this.model.data_model.messengers[index].messenger_settings.thread_field_id)
             }
 
             selectedOption.addEventListener('change', async (event) => {
@@ -86,6 +87,13 @@ import './style.scss';
                     const sendBtn = this.querySelector('.send_button');
                     createGroupBtn.style.display = 'block';
                     sendBtn.style.display = 'none';
+                }
+
+                if(this.model.data_model.messengers[0].messenger_settings.use_threads && !thread_id) {
+                    const sendBtn = this.querySelector('.send_button');
+                    const createThreadBtn = this.querySelector('.create_thread');
+                    sendBtn.style.display = 'none';
+                    createThreadBtn.style.display = 'block';
                 }
             }
         });
@@ -126,6 +134,7 @@ import './style.scss';
         }
 
         loader.style.display = 'block';
+        loader.style.right = '75px';
         button.setAttribute('disabled', '');
 
         const token = await gudhub.getToken();
@@ -204,6 +213,48 @@ import './style.scss';
 
         this.value = 0;
 
+    }
+
+    async createThread() {
+
+        const token = await gudhub.getToken();
+        const res = await fetch(`${gudhub.config.node_server_url}/integrations?token=${encodeURIComponent(token)}`);
+        const integrations = await res.json();
+        const slackIntegration = integrations.data.find(integration => integration.service_id === 'slack' && integration.field_id === this.fieldId);
+
+        const messengerSelect = this.querySelector('.messenger-select');
+        const messenger = messengerSelect.options[messengerSelect.selectedIndex].value;
+
+        const loader = this.querySelector('.send_message_loader');
+
+        loader.style.right = '125px';
+
+        loader.style.display = 'block';
+
+        const response = await fetch(`${gudhub.config.node_server_url}/conversation/thread/create/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                messenger,
+                messenger_user_id: this.messengers[messengerSelect.selectedIndex].messenger_user_id,
+                app_id: this.app_id,
+                field_id: this.field_id,
+                item_id: this.item_id,
+                user_id: this.activeUserId,
+                service_user_id: slackIntegration.service_user_id,
+                thread_field_id: this.model.data_model.messengers[messengerSelect.selectedIndex].messenger_settings.thread_field_id,
+                text: await gudhub.getFieldValue(this.appId, this.itemId, this.model.data_model.messengers[messengerSelect.selectedIndex].messenger_settings.user_name_field_id)
+            })
+        });
+
+        loader.style.display = 'none';
+
+        const sendBtn = this.querySelector('.send_button');
+        const createThreadBtn = this.querySelector('.create_thread');
+        sendBtn.style.display = 'block';
+        createThreadBtn.style.display = 'none';
     }
 
     async uploadFileToGudHub(file) {

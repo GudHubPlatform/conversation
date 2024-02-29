@@ -66,20 +66,6 @@ export default class GhConversationsData {
                 [
                   {
                     type: 'ghElement',
-                    property: 'data_model.user_name_field_id',
-                    data_model: (field) => {
-                        return {
-                            data_type: 'field',
-                            field_name: 'User name field',
-                            name_space: 'user_name_field',
-                            data_model: {
-                                app_id: field.app_id
-                            }
-                        }
-                    }
-                  },
-                  {
-                    type: 'ghElement',
                     property: 'data_model.use_messenger_id',
                     data_model() {
                       return {
@@ -170,6 +156,20 @@ export default class GhConversationsData {
                                              },
                                              {
                                               type: 'ghElement',
+                                              property: 'user_name_field_id',
+                                              data_model: (field) => {
+                                                  return {
+                                                      data_type: 'field',
+                                                      field_name: 'User name field',
+                                                      name_space: 'user_name_field',
+                                                      data_model: {
+                                                          app_id: fieldModel.app_id
+                                                      }
+                                                  }
+                                              }
+                                            },
+                                            {
+                                              type: 'ghElement',
                                               property: 'user_id_field',
                                               data_model: (field) => {
                                                   return {
@@ -233,6 +233,20 @@ export default class GhConversationsData {
                                               },
                                               control:
                                                 `<webhook-setter app-id="{{appId}}" field-id="{{elementId}}" ng-model="fieldModel"></webhook-setter>`
+                                            },
+                                            {
+                                              type: 'ghElement',
+                                              property: 'user_name_field_id',
+                                              data_model: (field) => {
+                                                  return {
+                                                      data_type: 'field',
+                                                      field_name: 'User name field',
+                                                      name_space: 'user_name_field',
+                                                      data_model: {
+                                                          app_id: fieldModel.app_id
+                                                      }
+                                                  }
+                                              }
                                             },
                                             {
                                               showIf: "photo_field === 1",
@@ -327,6 +341,20 @@ export default class GhConversationsData {
                                             },
                                             {
                                               type: 'ghElement',
+                                              property: 'user_name_field_id',
+                                              data_model: (field) => {
+                                                  return {
+                                                      data_type: 'field',
+                                                      field_name: 'User name field',
+                                                      name_space: 'user_name_field',
+                                                      data_model: {
+                                                          app_id: fieldModel.app_id
+                                                      }
+                                                  }
+                                              }
+                                            },
+                                            {
+                                              type: 'ghElement',
                                               property: 'user_id_field',
                                               data_model: (field) => {
                                                   return {
@@ -390,6 +418,20 @@ export default class GhConversationsData {
                                                 `<slack-oauth-button app-id="{{appId}}" field-id="{{elementId}}"></slack-oauth-button>`
                                             },
                                             {
+                                              type: 'ghElement',
+                                              property: 'user_name_field_id',
+                                              data_model: (field) => {
+                                                  return {
+                                                      data_type: 'field',
+                                                      field_name: 'Name',
+                                                      name_space: 'user_name_field',
+                                                      data_model: {
+                                                          app_id: fieldModel.app_id
+                                                      }
+                                                  }
+                                              }
+                                            },
+                                            {
                                               showIf: "photo_field === 1",
                                               type: "ghElement",
                                               property: "messenger",
@@ -442,7 +484,6 @@ export default class GhConversationsData {
                                                   }
                                               }
                                             },
-        
                                           ],
                                         ],
                                       },

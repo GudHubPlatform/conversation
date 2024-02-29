@@ -466,6 +466,10 @@ slack-create-conversation {
     }
 }
 
+.create_thread {
+    display: none;
+}
+
 @media all and (max-width: 575px) {
     gh-conversations {
         padding: 5px;

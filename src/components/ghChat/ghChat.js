@@ -167,7 +167,7 @@ class GhChat extends GhHtmlElement {
                     continue;
                 }
 
-                const userName = await gudhub.getFieldValue(this.app_id, this.item_id, this.model.data_model.user_name_field_id);
+                const userName = await gudhub.getFieldValue(this.app_id, this.item_id, this.model.data_model.messengers[index].messenger_settings.user_name_field_id);
                 const userPhoto = await gudhub.getInterpretationById(this.app_id, this.item_id, this.messengers[index].photo_field_id, "value");
 
                 if(!json.user) {
