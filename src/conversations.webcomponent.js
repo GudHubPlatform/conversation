@@ -15,6 +15,16 @@ import './style.scss';
         this.activeUserId = gudhub.storage.user.user_id;
         this.model = await gudhub.getField(this.app_id, this.field_id);
 
+        const slackMessenger = this.model.data_model.messengers.find(messenger => messenger.messenger_name === 'slack');
+        if(!slackMessenger.messenger_settings.page_id) {
+            const token = await gudhub.getToken();
+            const res = await fetch(`${gudhub.config.node_server_url}/integrations?token=${encodeURIComponent(token)}`);
+            const integrations = await res.json();
+            this.slackIntegration = integrations.data.find(integration => integration.service_id === 'slack' && integration.field_id === this.fieldId);
+            slackMessenger.messenger_settings.page_id = this.slackIntegration.service_user_id;
+            gudhub.updateField(this.appId, this.model);
+        }
+
         this.messengers = {};
 
         if(!this.model || !this.model.data_model.messengers) {
@@ -137,11 +147,6 @@ import './style.scss';
         loader.style.right = '75px';
         button.setAttribute('disabled', '');
 
-        const token = await gudhub.getToken();
-        const res = await fetch(`${gudhub.config.node_server_url}/integrations?token=${encodeURIComponent(token)}`);
-        const integrations = await res.json();
-        const slackIntegration = integrations.data.find(integration => integration.service_id === 'slack' && integration.field_id === this.fieldId);
-
         for(const index of Object.keys(this.model.data_model.messengers)) {
             const messenger = this.model.data_model.messengers[index];
             
@@ -173,11 +178,12 @@ import './style.scss';
                     item_id: this.item_id,
                     user_id: this.activeUserId,
                     message_id: this.messengers[messengerSelect.selectedIndex].message_id_for_threads,
-                    page_id: this.model.data_model.messengers[messengerSelect.selectedIndex].messenger_settings.page_id || slackIntegration.service_user_id,
+                    page_id: this.model.data_model.messengers[messengerSelect.selectedIndex].messenger_settings.page_id,
                     attachment: {
                         url: gudhubFile.url,
                         type: fileType
-                    }
+                    },
+                    user: gudhub.storage.user
                 })
             });
 
@@ -187,7 +193,7 @@ import './style.scss';
             uploadInput.value = '';
 
         } else {
-            const response = await fetch(`${gudhub.config.node_server_url}/conversation/send-message`, {
+             await fetch(`${gudhub.config.node_server_url}/conversation/send-message`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -201,8 +207,9 @@ import './style.scss';
                     item_id: this.item_id,
                     user_id: this.activeUserId,
                     message_id: this.messengers[messengerSelect.selectedIndex].message_id_for_threads,
-                    page_id: this.model.data_model.messengers[messengerSelect.selectedIndex].messenger_settings.page_id || slackIntegration.service_user_id,
-                    text
+                    page_id: this.model.data_model.messengers[messengerSelect.selectedIndex].messenger_settings.page_id,
+                    text,
+                    user: gudhub.storage.user
                 })
             });
 
@@ -216,11 +223,6 @@ import './style.scss';
     }
 
     async createThread() {
-
-        const token = await gudhub.getToken();
-        const res = await fetch(`${gudhub.config.node_server_url}/integrations?token=${encodeURIComponent(token)}`);
-        const integrations = await res.json();
-        const slackIntegration = integrations.data.find(integration => integration.service_id === 'slack' && integration.field_id === this.fieldId);
 
         const messengerSelect = this.querySelector('.messenger-select');
         const messenger = messengerSelect.options[messengerSelect.selectedIndex].value;
@@ -243,9 +245,10 @@ import './style.scss';
                 field_id: this.field_id,
                 item_id: this.item_id,
                 user_id: this.activeUserId,
-                service_user_id: slackIntegration.service_user_id,
+                service_user_id: this.model.data_model.messengers[messengerSelect.selectedIndex].messenger_settings.page_id,
                 thread_field_id: this.model.data_model.messengers[messengerSelect.selectedIndex].messenger_settings.thread_field_id,
-                text: await gudhub.getFieldValue(this.appId, this.itemId, this.model.data_model.messengers[messengerSelect.selectedIndex].messenger_settings.user_name_field_id)
+                text: await gudhub.getFieldValue(this.appId, this.itemId, this.model.data_model.messengers[messengerSelect.selectedIndex].messenger_settings.user_name_field_id),
+                user: gudhub.storage.user
             })
         });
 

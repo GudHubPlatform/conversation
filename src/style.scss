@@ -110,6 +110,9 @@ gh-conversations {
                 border: 1px solid #0d99ff;
                 border-radius: 10px;
                 margin-right: 5px;
+                &.hide {
+                    display: none;
+                }
             }
 
             .message {

@@ -97,7 +97,7 @@ class GhChat extends GhHtmlElement {
     addSubscriberToNewMessage() {
         gudhub.on('conversations_message_received', { app_id: this.app_id, field_id: this.field_id }, async (_event, response) => {
             const model = await gudhub.getField(this.app_id, this.field_id);
-            if(this.app_id == response.data.app_id && this.field_id == response.data.field_id, this.item_id == response.data.item_id) {
+            if(this.app_id == response.data.app_id && this.field_id == response.data.field_id && this.item_id == response.data.item_id) {
                 const message = response.data.message;
                 message.messenger = response.data.messenger;
                 if(message.type === 'attachment') {
@@ -206,7 +206,7 @@ class GhChat extends GhHtmlElement {
                 const messages = json.messages.map((message) => {
                     message.messenger = messenger;
                     const findedPage = this.model.data_model.messengers.find(messenger => messenger.messenger_settings.page_id === message.page_id);
-                    message.page_name = findedPage?.messenger_settings?.page_name;
+                    message.page_name = findedPage?.messenger_settings?.page_name || "";
                     if(message.type === 'attachment') {
                         message.type = this.getFileType({ name: message.content });
                     }
@@ -284,7 +284,7 @@ class GhChat extends GhHtmlElement {
                                 minute: "2-digit",
                             })}
                     </span>
-                    <span class="page">${message.page_name}</span>
+                    <span class="page ${!message.page_name ? 'hide' : ''}">${message.page_name}</span>
                 </div>
                 <p class="message">
                     ${ !message.type ? message.content : '' }
