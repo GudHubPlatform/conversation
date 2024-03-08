@@ -34,6 +34,8 @@ import './style.scss';
             return;
         }
 
+        this.toast = gudhub.ghconstructor.angularInjector.get('ghToastService');
+
         for(const index of Object.keys(this.model.data_model.messengers)) {
             const messenger = this.model.data_model.messengers[index];
             
@@ -164,7 +166,7 @@ import './style.scss';
 
             const gudhubFile = await this.uploadFileToGudHub(file);
 
-            const response = await fetch(`${gudhub.config.node_server_url}/conversation/send-attachment`, {
+            let response = await fetch(`${gudhub.config.node_server_url}/conversation/send-attachment`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -187,13 +189,19 @@ import './style.scss';
                 })
             });
 
+            response = await response.json();
+
+            if(!response.content && response.status != 200) {
+                this.showErrorMessage(response.message);
+            }
+
             loader.style.display = 'none';
             button.removeAttribute('disabled');
 
             uploadInput.value = '';
 
         } else {
-             await fetch(`${gudhub.config.node_server_url}/conversation/send-message`, {
+             let response = await fetch(`${gudhub.config.node_server_url}/conversation/send-message`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -213,6 +221,12 @@ import './style.scss';
                 })
             });
 
+            response = await response.json();
+
+            if(!response.content && response.status != 200) {
+                this.showErrorMessage(response.message);
+            }
+
             loader.style.display = 'none';
             button.removeAttribute('disabled');
             textarea.value = '';
@@ -220,6 +234,22 @@ import './style.scss';
 
         this.value = 0;
 
+    }
+
+    showErrorMessage(message) {
+
+        const template = `<md-toast>
+                <p>${message}</p>
+                <div class="gh-btn" gh-icon="cross 0893d2 30px normal" ng-click="closeToast()"></div>
+            </md-toast>`;
+
+            const options = {
+                template,
+                hideDelay: 10000,
+                scope: this.scope.$new(true),
+            };
+
+            this.toast.customToast(options)
     }
 
     async createThread() {
