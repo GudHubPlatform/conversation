@@ -275,7 +275,6 @@ import './style.scss';
                 field_id: this.field_id,
                 item_id: this.item_id,
                 user_id: this.activeUserId,
-                service_user_id: this.model.data_model.messengers[messengerSelect.selectedIndex].messenger_settings.page_id,
                 thread_field_id: this.model.data_model.messengers[messengerSelect.selectedIndex].messenger_settings.thread_field_id,
                 text: await gudhub.getFieldValue(this.appId, this.itemId, this.model.data_model.messengers[messengerSelect.selectedIndex].messenger_settings.user_name_field_id),
                 user: gudhub.storage.user

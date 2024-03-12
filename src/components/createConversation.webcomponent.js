@@ -36,45 +36,38 @@ class CreateConversation extends GhHtmlElement {
     }
 
     async createSlackConversation() {
-        // Check if integration for slack enabled
-        const token = await gudhub.getToken();
-        const response = await fetch(`${gudhub.config.node_server_url}/integrations?token=${encodeURIComponent(token)}`);
-        const integrations = await response.json();
-        const slackIntegration = integrations.data.find(integration => integration.service_id === 'slack' && integration.field_id === this.fieldId);
 
-        if(slackIntegration) {
+        const ghDialog = gudhub.ghconstructor.angularInjector.get('GhDialog');
 
-            const ghDialog = gudhub.ghconstructor.angularInjector.get('GhDialog');
-      
-              ghDialog.show({
+            ghDialog.show({
                 position: 'center_event_position',
                 class: 'webhook_set_dialog',
                 toolbar: false,
                 template: {
-                  toolbar: '',
-                  content: /*html*/`
+                    toolbar: '',
+                    content: /*html*/`
                     <div class="dialog_wrapper">
-                      <div class="field_wrapper">
+                        <div class="field_wrapper">
                         <span class="field-wrap-name"><span class="gh_element_name">Channel Name</span></span>
                         <gh-input gh-editable="true" gh-data-type="text" type="text" ng-model="groupName" class="group_name"></gh-input>
-                      </div>
+                        </div>
 
-                      <span ng-if="showErrorMessage" class="error"> Please enter a channel name </span>
-                      <span ng-if="showResponseError" class="error"><span class="bold">Error:</span> {{responseError}} </span>
+                        <span ng-if="showErrorMessage" class="error"> Please enter a channel name </span>
+                        <span ng-if="showResponseError" class="error"><span class="bold">Error:</span> {{responseError}} </span>
 
-                      <button class="btn save_btn btn-grean" ng-click="createGroup()"> Create Channel </button>
+                        <button class="btn save_btn btn-grean" ng-click="createGroup()"> Create Channel </button>
 
-                      <div ng-if="showLoader" class="create_group_loader loader">
+                        <div ng-if="showLoader" class="create_group_loader loader">
                             <span></span>
-                      </div>
+                        </div>
                     </div>
                     `
                 },
 
                 locals: {
-                  appId: this.appId,
-                  fieldId: this.fieldId,
-                  itemId: this.itemId
+                    appId: this.appId,
+                    fieldId: this.fieldId,
+                    itemId: this.itemId
                 },
 
                 controller: ['$scope', 'appId', 'fieldId', 'itemId', function($scope, appId, fieldId, itemId) {
@@ -94,9 +87,8 @@ class CreateConversation extends GhHtmlElement {
                                 },
                                 body: JSON.stringify({
                                     app_id: appId,
-                                    field_id:fieldId,
+                                    field_id: fieldId,
                                     item_id: itemId,
-                                    service_user_id: slackIntegration.service_user_id,
                                     messenger: 'slack',
                                     group_name: $scope.groupName,
                                     gudhub_user_id: gudhub.storage.getUser().user_id
@@ -124,8 +116,7 @@ class CreateConversation extends GhHtmlElement {
                         }
                     }
                 }]
-              })
-        }
+            })
     }
 
 }
