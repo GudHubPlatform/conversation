@@ -263,7 +263,7 @@ import './style.scss';
 
         loader.style.display = 'block';
 
-        const response = await fetch(`${gudhub.config.node_server_url}/conversation/thread/create/`, {
+        let response = await fetch(`${gudhub.config.node_server_url}/conversation/thread/create/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -280,6 +280,14 @@ import './style.scss';
                 user: gudhub.storage.user
             })
         });
+
+        response = await response.json();
+
+        if(!response.ok) {
+            this.showErrorMessage(response.message);
+            loader.style.display = 'none';
+            return;
+        }
 
         loader.style.display = 'none';
 
