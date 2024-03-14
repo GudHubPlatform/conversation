@@ -16,7 +16,7 @@ import './style.scss';
         this.model = await gudhub.getField(this.app_id, this.field_id);
 
         const slackMessenger = this.model.data_model.messengers.find(messenger => messenger.messenger_name === 'slack');
-        if(!slackMessenger.messenger_settings.page_id) {
+        if(slackMessenger && !slackMessenger.messenger_settings.page_id) {
             const token = await gudhub.getToken();
             const res = await fetch(`${gudhub.config.node_server_url}/integrations?token=${encodeURIComponent(token)}`);
             const integrations = await res.json();
