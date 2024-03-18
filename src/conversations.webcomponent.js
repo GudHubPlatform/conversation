@@ -276,7 +276,7 @@ import './style.scss';
                 item_id: this.item_id,
                 user_id: this.activeUserId,
                 thread_field_id: this.model.data_model.messengers[messengerSelect.selectedIndex].messenger_settings.thread_field_id,
-                text: await gudhub.getFieldValue(this.appId, this.itemId, this.model.data_model.messengers[messengerSelect.selectedIndex].messenger_settings.user_name_field_id),
+                text: `<${window.location.href}|${await gudhub.getFieldValue(this.appId, this.itemId, this.model.data_model.messengers[messengerSelect.selectedIndex].messenger_settings.user_name_field_id)}>`,
                 user: gudhub.storage.user
             })
         });

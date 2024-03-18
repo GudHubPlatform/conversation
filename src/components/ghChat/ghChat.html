@@ -2,6 +2,11 @@
     ${
         conversation.messages.length ?
         conversation.messages.reduce((html, message) => {
+            const isMessageIncludeLink = message.content.includes('http');
+            const messageArr = message.content.split('|');
+            const [preparedLink, text] = messageArr;
+            const link = preparedLink.slice(1, preparedLink.length);
+
             return html + `
                 ${
                     new Date(message.timestamp).getFullYear() != new Date().getFullYear() ? `
@@ -51,7 +56,7 @@
                             </span>
                         </div>
                         <p class="message">
-                            ${ !message.type ? message.content : '' }
+                            ${ !message.type ? (isMessageIncludeLink ? `<a target="_blank" href="${link}">${text ? text.slice(0,text.length - 1) : ''}</a>` : message.content) : '' }
                             ${ message.type === 'image' ? `<img src="${message.content}" alt="">` : ''}
                             ${ message.type === 'video' ? `<video src="${message.content}" controls></video>` : ''}
                             ${ message.type === 'audio' ? `<audio src="${message.content}" controls></audio>` : ''}

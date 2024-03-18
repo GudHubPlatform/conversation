@@ -247,6 +247,11 @@ class GhChat extends GhHtmlElement {
     }
 
     addMessageToConversation(message) {
+        const isMessageIncludeLink = message.content.includes('http');
+        const messageArr = message.content.split('|');
+        const [preparedLink, text] = messageArr;
+        const link = preparedLink.slice(1, preparedLink.length);
+
         const newMessageTemplate = /*html*/`
         ${
             new Date(message.timestamp).getDate() !== new Date(this.conversation.messages[this.conversation.messages.indexOf(message) - 1]?.timestamp).getDate() ? `
@@ -287,7 +292,7 @@ class GhChat extends GhHtmlElement {
                     <span class="page ${!message.page_name ? 'hide' : ''}">${message.page_name}</span>
                 </div>
                 <p class="message">
-                    ${ !message.type ? message.content : '' }
+                    ${ !message.type ? (isMessageIncludeLink ? `<a target="_blank" href="${link}">${text ? text.slice(0,text.length - 1) : ''}</a>` : message.content) : '' }
                     ${ message.type === 'image' ? `<img src="${message.content}" alt="">` : ''}
                     ${ message.type === 'video' ? `<video src="${message.content}" controls></video>` : ''}
                     ${ message.type === 'audio' ? `<audio src="${message.content}" controls></audio>` : ''}
