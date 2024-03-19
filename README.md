@@ -1,6 +1,6 @@
 # Conversations
 
-This gh element provides feature of chatting through available messengers:
+This gh-element provides feature of chatting through available messengers:
 
 ## Available messengers
 
@@ -13,11 +13,7 @@ This gh element provides feature of chatting through available messengers:
 
 There are 2 main components:
 
-1. The main component of conversations is the `GhConversations` class, which contains methods for working with messages and users.
-
-The main aims of this component is init conversation in `onInit` method and send messages in `sendMessage` method.
-
-There are some additional methods here:
+1. The main component of conversations is the `GhConversations` class, which contains methods for working with messages and users. The main aims of this component is init conversation in `onInit` method and send messages in `sendMessage` method. There are some additional methods here:
 
 - `createThread()` - specific method for **Slack**, which send a new message to channel and save thread id in field for future sending messages in thread.
 - `showErrorMessage(message:string)` - method for showing error message to user, if gets some errors from backend.
