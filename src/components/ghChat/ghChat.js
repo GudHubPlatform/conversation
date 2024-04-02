@@ -26,6 +26,13 @@ class GhChat extends GhHtmlElement {
 
         this.messengers = document.querySelector('gh-conversations').messengers;
 
+        for(const index of Object.keys(this.model.data_model.messengers)) {
+            const messenger = this.model.data_model.messengers[index];
+            if(messenger.messenger_settings.use_threads) {
+                this.messengers[index].message_id_for_threads = await gudhub.getFieldValue(this.appId, this.itemId, messenger.messenger_settings.thread_field_id);
+            }
+        }
+
         this.userImagesFields = [];
         for(let i in this.messengers) {
             if(!this.userImagesFields.find(fieldId => fieldId === this.messengers[i].photo_field_id)) {
@@ -307,6 +314,7 @@ class GhChat extends GhHtmlElement {
 
     disconnectedCallback() {
         gudhub.destroy('conversations_message_received', { app_id: this.app_id, field_id: this.field_id });
+        console.log("DESTROY")
         resizeObserver.destroy();
     }
 }
