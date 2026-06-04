@@ -41,7 +41,7 @@ import './style.scss';
             
             this.messengers[index] = {
                 token: messenger.messenger_settings.bot_token,
-                messenger_user_id: await gudhub.getFieldValue(this.app_id, this.item_id, this.model.data_model.messengers[index].messenger_settings.user_id_field),
+                messenger_user_id: await this.getMessengerUserId(messenger),
                 photo_field_id: this.model.data_model.messengers[index].messenger_settings.photo_field,
                 messenger: messenger.messenger_name,
             }
@@ -152,7 +152,7 @@ import './style.scss';
         for(const index of Object.keys(this.model.data_model.messengers)) {
             const messenger = this.model.data_model.messengers[index];
             
-            this.messengers[index].messenger_user_id = await gudhub.getFieldValue(this.app_id, this.item_id, this.model.data_model.messengers[index].messenger_settings.user_id_field);
+            this.messengers[index].messenger_user_id = await this.getMessengerUserId(messenger);
 
             if(messenger.messenger_settings.use_threads) {
                 this.messengers[index].message_id_for_threads = await gudhub.getFieldValue(this.appId, this.itemId, messenger.messenger_settings.thread_field_id);
@@ -313,6 +313,13 @@ import './style.scss';
 
         return response;
 
+    }
+
+    async getMessengerUserId(messenger) {
+        // If user_id_field is not configured, fall back to item_id as the conversation key
+        return messenger.messenger_settings.user_id_field
+            ? await gudhub.getFieldValue(this.app_id, this.item_id, messenger.messenger_settings.user_id_field)
+            : this.item_id;
     }
 
     toBase64(file) {

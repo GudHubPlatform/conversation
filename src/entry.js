@@ -4,6 +4,7 @@ import './components/webhookSetter.directive.js';
 import './components/facebookLogin.directive.js';
 import './components/unreadMessages.webcomponent.js'
 import './components/slack.oauth.js';
+import './components/claudeApiKey.directive.js';
 
 export default class GhConversationsData {
 
@@ -104,6 +105,10 @@ export default class GhConversationsData {
                                         {
                                             name: 'Slack',
                                             value: 'slack'
+                                        },
+                                        {
+                                            name: 'Claude AI',
+                                            value: 'claude'
                                         }
                                     ]
                                 };
@@ -382,6 +387,41 @@ export default class GhConversationsData {
                                               }
                                             },
         
+                                          ],
+                                        ],
+                                      },
+                                    ],
+                                  };
+                                },
+                              },{
+                                property: "messenger_settings",
+                                prop_name: "Settings",
+                                type: "additional_settings",
+                                display: false,
+                                data_model: function (option, scope) {
+                                    this.display = option.messenger_name === 'claude';
+                                  return {
+                                    appId: fieldModel.app_id,
+                                    elementId: fieldModel.field_id,
+                                    settings: [
+                                      {
+                                        title: "Messenger",
+                                        type: "general_setting",
+                                        icon: "configuration",
+                                        columns_list: [
+                                          [
+                                            {
+                                              title: "Claude AI Settings",
+                                              type: "header",
+                                            },
+                                            {
+                                              type: 'html',
+                                              data_model: function (fieldModel) {
+                                                return {};
+                                              },
+                                              control:
+                                                `<claude-api-key app-id="{{appId}}" field-id="{{elementId}}" ng-model="fieldModel"></claude-api-key>`
+                                            },
                                           ],
                                         ],
                                       },

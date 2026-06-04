@@ -284,6 +284,9 @@ class GhChat extends GhHtmlElement {
                     ${
                         message.messenger === 'slack' ? '<img src="https://gudhub.com/modules/conversation/public/images/slack.svg" alt="Slack" />' : ''
                     }
+                    ${
+                        message.messenger === 'claude' ? '<img src="https://gudhub.com/modules/conversation/public/images/claude.svg" alt="Claude AI" />' : ''
+                    }
                 </div>
                 <gh-avatar-webcomponent app-id="${this.appId}" item-id="${this.itemId}" images-fields-id="${this.userImagesFields}" name="${message.user_name || this.conversation.users.find(user => user.user_id == message.user_id)?.fullname}" url="${message.photo_url || this.conversation.users.find(user => user.user_id == message.user_id)?.avatar_512}"></gh-avatar-webcomponent>
             </div>
