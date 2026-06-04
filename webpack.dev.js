@@ -8,6 +8,9 @@ export default merge(common, {
         static: {
             directory: './dist'
         },
+        devMiddleware: {
+            writeToDisk: true
+        },
         headers: {
             'Access-Control-Allow-Origin': '*'
         },
