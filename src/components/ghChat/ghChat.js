@@ -1,6 +1,7 @@
 import GhHtmlElement from '@gudhub/gh-html-element';
 import html from './ghChat.html';
 import resizeObserver from './resizeObserver.js';
+import { marked } from 'marked';
 
 class GhChat extends GhHtmlElement {
 
@@ -229,10 +230,16 @@ class GhChat extends GhHtmlElement {
         conversation.messages.sort((a, b) => {
             return a.timestamp - b.timestamp;
         });
-        
-        conversation.messages = conversation.messages.filter((message, index, array) => array.findIndex(element=>(element.timestamp === message.timestamp)) === index);
+
+        conversation.messages = conversation.messages
+            .filter((message, index, array) => array.findIndex(element=>(element.timestamp === message.timestamp)) === index)
+            .map(message => ({ ...message, renderedContent: this.renderMarkdown(message.content) }));
 
         return conversation;
+    }
+
+    renderMarkdown(content) {
+        return marked.parse(content, { breaks: true });
     }
 
     getFileType(file) {
@@ -254,7 +261,8 @@ class GhChat extends GhHtmlElement {
     }
 
     addMessageToConversation(message) {
-        const isMessageIncludeLink = message.content.includes('http');
+        message.renderedContent = this.renderMarkdown(message.content);
+        const isMessageIncludeLink = message.content.startsWith('<http') && message.content.includes('|');
         const messageArr = message.content.split('|');
         const [preparedLink, text] = messageArr;
         const link = preparedLink.slice(1, preparedLink.length);
@@ -301,13 +309,13 @@ class GhChat extends GhHtmlElement {
                     </span>
                     <span class="page ${!message.page_name ? 'hide' : ''}">${message.page_name}</span>
                 </div>
-                <p class="message">
-                    ${ !message.type ? (isMessageIncludeLink ? `<a target="_blank" href="${link}">${text ? text.slice(0,text.length - 1) : ''}</a>` : message.content) : '' }
+                <div class="message">
+                    ${ !message.type ? (isMessageIncludeLink ? `<a target="_blank" href="${link}">${text ? text.slice(0,text.length - 1) : ''}</a>` : message.renderedContent) : '' }
                     ${ message.type === 'image' ? `<img src="${message.content}" alt="">` : ''}
                     ${ message.type === 'video' ? `<video src="${message.content}" controls></video>` : ''}
                     ${ message.type === 'audio' ? `<audio src="${message.content}" controls></audio>` : ''}
                     ${ message.type === 'file' ? `<a href="${message.content}" download>Download file</a>` : ''}
-                </p>
+                </div>
             </div>
         </div>`;
 

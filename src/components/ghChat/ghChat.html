@@ -2,7 +2,7 @@
     ${
         conversation.messages.length ?
         conversation.messages.reduce((html, message) => {
-            const isMessageIncludeLink = message.content.includes('http');
+            const isMessageIncludeLink = message.content.startsWith('<http') && message.content.includes('|');
             const messageArr = message.content.split('|');
             const [preparedLink, text] = messageArr;
             const link = preparedLink.slice(1, preparedLink.length);
@@ -55,8 +55,8 @@
                                   })}
                             </span>
                         </div>
-                        <p class="message">
-                            ${ !message.type ? (isMessageIncludeLink ? `<a target="_blank" href="${link}">${text ? text.slice(0,text.length - 1) : ''}</a>` : message.content) : '' }
+                        <div class="message">
+                            ${ !message.type ? (isMessageIncludeLink ? `<a target="_blank" href="${link}">${text ? text.slice(0,text.length - 1) : ''}</a>` : message.renderedContent) : '' }
                             ${ message.type === 'image' ? `<img src="${message.content}" alt="">` : ''}
                             ${ message.type === 'video' ? `<video src="${message.content}" controls></video>` : ''}
                             ${ message.type === 'audio' ? `<audio src="${message.content}" controls></audio>` : ''}
@@ -67,7 +67,7 @@
                                 </svg>
                                 Download file
                             </a>` : ''}
-                        </p>
+                        </div>
                     </div>
                 </div>
             `
