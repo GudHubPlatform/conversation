@@ -1,0 +1,26 @@
+${
+    groupedUsers.reduce((html, group, index) => {
+        return html + `
+            <div class="users_sidebar__group ${index === 0 ? '' : 'users_sidebar__group--collapsed'}" data-group-id="${group.group_id}">
+                <div class="users_sidebar__group_name" onclick="toggleGroup()">
+                    <svg class="users_sidebar__group_arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
+                    <span>${group.group_name}</span>
+                </div>
+                <div class="users_sidebar__group_users">
+                    ${
+                        group.users === null ? `
+                            <div class="users_sidebar__group_loader loader"><span></span></div>
+                        ` : group.users.reduce((usersHtml, user) => {
+                            return usersHtml + `
+                                <div class="users_sidebar__user">
+                                    <gh-avatar-webcomponent app-id="${appId}" item-id="${itemId}" name="${user.fullname}" url="${user.avatar_128 || user.avatar_512 || ''}"></gh-avatar-webcomponent>
+                                    <span class="users_sidebar__user_name">${user.fullname}</span>
+                                </div>
+                            `;
+                        }, '')
+                    }
+                </div>
+            </div>
+        `;
+    }, '')
+}
