@@ -36,6 +36,8 @@ import './style.scss';
 
         this.toast = gudhub.ghconstructor.angularInjector.get('ghToastService');
 
+        this.groupedUsers = await this.getGroupedUsers();
+
         for(const index of Object.keys(this.model.data_model.messengers)) {
             const messenger = this.model.data_model.messengers[index];
             
@@ -109,6 +111,38 @@ import './style.scss';
                 }
             }
         });
+    }
+
+    async getGroupedUsers() {
+        const groups = await gudhub.groupSharing.getGroupsByUser(this.activeUserId);
+
+        if(!groups || !groups.length) return [];
+
+        const usersCache = {};
+
+        const groupedUsers = await Promise.all(groups.map(async (group) => {
+            const groupUsers = await gudhub.groupSharing.getUsersByGroup(group.group_id);
+
+            const users = await Promise.all((groupUsers || []).map((groupUser) => {
+                if(!usersCache[groupUser.user_id]) {
+                    usersCache[groupUser.user_id] = gudhub.getUserById(groupUser.user_id);
+                }
+                return usersCache[groupUser.user_id];
+            }));
+
+            return {
+                group_id: group.group_id,
+                group_name: group.group_name,
+                users: users.filter(Boolean)
+            };
+        }));
+
+        return groupedUsers.filter(group => group.users.length);
+    }
+
+    toggleGroup(element) {
+        const group = element.closest('.users_sidebar__group');
+        group.classList.toggle('users_sidebar__group--collapsed');
     }
 
     getFileType(file) {

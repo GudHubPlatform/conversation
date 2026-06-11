@@ -1,6 +1,37 @@
-<div class="multi-chat">
+<div class="conversation_layout">
+    ${
+        groupedUsers.length ? `
+        <div class="users_sidebar">
+            ${
+                groupedUsers.reduce((html, group, index) => {
+                    return html + `
+                        <div class="users_sidebar__group ${index === 0 ? '' : 'users_sidebar__group--collapsed'}">
+                            <div class="users_sidebar__group_name" onclick="toggleGroup()">
+                                <svg class="users_sidebar__group_arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
+                                <span>${group.group_name}</span>
+                            </div>
+                            <div class="users_sidebar__group_users">
+                                ${
+                                    group.users.reduce((usersHtml, user) => {
+                                        return usersHtml + `
+                                            <div class="users_sidebar__user">
+                                                <gh-avatar-webcomponent app-id="${appId}" item-id="${itemId}" name="${user.fullname}" url="${user.avatar_128 || user.avatar_512 || ''}"></gh-avatar-webcomponent>
+                                                <span class="users_sidebar__user_name">${user.fullname}</span>
+                                            </div>
+                                        `;
+                                    }, '')
+                                }
+                            </div>
+                        </div>
+                    `;
+                }, '')
+            }
+        </div>
+        ` : ''
+    }
+    <div class="multi-chat">
     <gh-chat app-id="${appId}" item-id="${itemId}" field-id="${fieldId}"></gh-chat>
-    
+
     <div class="form_wrapper">
         <label class="upload">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M21.586 10.461l-10.05 10.075c-1.95 1.949-5.122 1.949-7.071 0s-1.95-5.122 0-7.072l10.628-10.585c1.17-1.17 3.073-1.17 4.243 0 1.169 1.17 1.17 3.072 0 4.242l-8.507 8.464c-.39.39-1.024.39-1.414 0s-.39-1.024 0-1.414l7.093-7.05-1.415-1.414-7.093 7.049c-1.172 1.172-1.171 3.073 0 4.244s3.071 1.171 4.242 0l8.507-8.464c.977-.977 1.464-2.256 1.464-3.536 0-2.769-2.246-4.999-5-4.999-1.28 0-2.559.488-3.536 1.465l-10.627 10.583c-1.366 1.368-2.05 3.159-2.05 4.951 0 3.863 3.13 7 7 7 1.792 0 3.583-.684 4.95-2.05l10.05-10.075-1.414-1.414z"/></svg>
@@ -26,5 +57,6 @@
                 <button class="gh-btn inline gh-btn-blue gh-btn-bg create_thread" onclick="createThread()">Create Thread</button>
             </div>
         </form>
+    </div>
     </div>
 </div>
