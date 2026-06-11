@@ -15,11 +15,29 @@ class GhUsersSideBar extends GhHtmlElement {
         this.groupedUsers = await this.getGroupedUsers();
 
         super.render(html);
+
+        if(this.groupedUsers.length) {
+            this.syncHeight();
+            this.heightObserver = new ResizeObserver(() => this.syncHeight());
+            this.heightObserver.observe(this.closest('.conversation_layout').querySelector('.multi-chat'));
+        }
     }
 
     getAttributes() {
         this.appId = this.getAttribute('app-id');
         this.itemId = this.getAttribute('item-id');
+    }
+
+    // Keep the sidebar's height in sync with the chat column, so its own
+    // content scrolls internally instead of growing the whole layout.
+    syncHeight() {
+        const multiChat = this.closest('.conversation_layout')?.querySelector('.multi-chat');
+        if(!multiChat) return;
+        this.style.height = `${multiChat.getBoundingClientRect().height}px`;
+    }
+
+    onDestroy() {
+        this.heightObserver?.disconnect();
     }
 
     // Only the first group is unfolded by default, so its users are loaded upfront.
