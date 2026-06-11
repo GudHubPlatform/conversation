@@ -1,16 +1,10 @@
 import GhHtmlElement from '@gudhub/gh-html-element';
 import html from './usersSideBar.html';
+import './usersSideBarItem/usersSideBarItem.js';
 
 class GhUsersSideBar extends GhHtmlElement {
 
-    constructor() {
-        super();
-        this.usersCache = {};
-    }
-
     async onInit() {
-        this.getAttributes();
-
         this.activeUserId = gudhub.storage.user.user_id;
         this.groupedUsers = await this.getGroupedUsers();
 
@@ -21,11 +15,6 @@ class GhUsersSideBar extends GhHtmlElement {
             this.heightObserver = new ResizeObserver(() => this.syncHeight());
             this.heightObserver.observe(this.closest('.conversation_layout').querySelector('.multi-chat'));
         }
-    }
-
-    getAttributes() {
-        this.appId = this.getAttribute('app-id');
-        this.itemId = this.getAttribute('item-id');
     }
 
     // Keep the sidebar's height in sync with the chat column, so its own
@@ -61,14 +50,7 @@ class GhUsersSideBar extends GhHtmlElement {
     async loadGroupUsers(groupId) {
         const groupUsers = await gudhub.groupSharing.getUsersByGroup(groupId);
 
-        const users = await Promise.all((groupUsers || []).map((groupUser) => {
-            if(!this.usersCache[groupUser.user_id]) {
-                this.usersCache[groupUser.user_id] = gudhub.getUserById(groupUser.user_id);
-            }
-            return this.usersCache[groupUser.user_id];
-        }));
-
-        return users.filter(Boolean);
+        return groupUsers || [];
     }
 
     async toggleGroup(element) {
@@ -96,10 +78,7 @@ class GhUsersSideBar extends GhHtmlElement {
     renderUsers(users) {
         return users.reduce((usersHtml, user) => {
             return usersHtml + `
-                <div class="users_sidebar__user">
-                    <gh-avatar-webcomponent app-id="${this.appId}" item-id="${this.itemId}" name="${user.fullname}" url="${user.avatar_128 || user.avatar_512 || ''}"></gh-avatar-webcomponent>
-                    <span class="users_sidebar__user_name">${user.fullname}</span>
-                </div>
+                <gh-user-side-bar-item class="users_sidebar__user" user-id="${user.user_id}"></gh-user-side-bar-item>
             `;
         }, '');
     }

@@ -90,13 +90,17 @@ gh-conversations {
                 .gh-avatar {
                     width: auto;
                     .gh-avatar_wrapper {
-                        width: 28px;
-                        height: 28px;
-                        border-radius: 6px;
+                        width: 22px;
+                        height: 22px;
+                        border-radius: 50%;
                         overflow: hidden;
                         img {
-                            width: 28px;
-                            height: 28px;
+                            width: 22px;
+                            height: 22px;
+                        }
+                        span {
+                            font-size: 12px;
+                            line-height: 22px;
                         }
                     }
                 }

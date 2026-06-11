@@ -1,0 +1,8 @@
+${
+    user ? `
+        <gh-avatar-webcomponent name="${user.fullname}"${user.avatar_128 || user.avatar_512 ? ` url="${user.avatar_128 || user.avatar_512}"` : ''}></gh-avatar-webcomponent>
+        <span class="users_sidebar__user_name">${user.fullname}</span>
+    ` : `
+        <div class="users_sidebar__group_loader loader"><span></span></div>
+    `
+}

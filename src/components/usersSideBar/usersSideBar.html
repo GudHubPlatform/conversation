@@ -12,10 +12,7 @@ ${
                             <div class="users_sidebar__group_loader loader"><span></span></div>
                         ` : group.users.reduce((usersHtml, user) => {
                             return usersHtml + `
-                                <div class="users_sidebar__user">
-                                    <gh-avatar-webcomponent app-id="${appId}" item-id="${itemId}" name="${user.fullname}" url="${user.avatar_128 || user.avatar_512 || ''}"></gh-avatar-webcomponent>
-                                    <span class="users_sidebar__user_name">${user.fullname}</span>
-                                </div>
+                                <gh-user-side-bar-item class="users_sidebar__user" user-id="${user.user_id}"></gh-user-side-bar-item>
                             `;
                         }, '')
                     }
